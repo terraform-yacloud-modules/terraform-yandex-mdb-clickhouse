@@ -7,7 +7,7 @@
 #   description = "Yandex Cloud ID"
 # }
 
-variable "yc_folder_id" {
+variable "folder_id" {
   description = "Yandex Cloud folder ID"
 }
 
@@ -97,7 +97,7 @@ variable "query_log_retention_size" {
 
 variable "query_log_retention_time" {
   description = "Query log retention time"
-  default     = 2592000
+  default     = 86400000 # 1 day in milliseconds
 }
 
 variable "query_thread_log_enabled" {
@@ -112,7 +112,7 @@ variable "query_thread_log_retention_size" {
 
 variable "query_thread_log_retention_time" {
   description = "Query thread log retention time"
-  default     = 2592000
+  default     = 86400000 # 1 day in milliseconds
 }
 
 variable "part_log_retention_size" {
@@ -122,7 +122,7 @@ variable "part_log_retention_size" {
 
 variable "part_log_retention_time" {
   description = "Part log retention time"
-  default     = 2592000
+  default     = 86400000 # 1 day in milliseconds
 }
 
 variable "metric_log_enabled" {
@@ -137,7 +137,7 @@ variable "metric_log_retention_size" {
 
 variable "metric_log_retention_time" {
   description = "Metric log retention time"
-  default     = 2592000
+  default     = 86400000 # 1 day in milliseconds
 }
 
 variable "trace_log_enabled" {
@@ -152,7 +152,7 @@ variable "trace_log_retention_size" {
 
 variable "trace_log_retention_time" {
   description = "Trace log retention time"
-  default     = 2592000
+  default     = 86400000 # 1 day in milliseconds
 }
 
 variable "text_log_enabled" {
@@ -167,7 +167,7 @@ variable "text_log_retention_size" {
 
 variable "text_log_retention_time" {
   description = "Text log retention time"
-  default     = 2592000
+  default     = 86400000 # 1 day in milliseconds
 }
 
 variable "text_log_level" {
@@ -331,7 +331,6 @@ variable "user_name" {
 variable "user_password" {
   description = "User password"
   sensitive   = true
-  default     = "your_password"
 }
 
 variable "max_memory_usage_for_user" {
