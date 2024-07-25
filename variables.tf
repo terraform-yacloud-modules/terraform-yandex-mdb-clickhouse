@@ -363,36 +363,6 @@ variable "quota_errors" {
   default     = 1000
 }
 
-variable "format_schema_name" {
-  description = "Format schema name"
-  default     = "test_schema"
-}
-
-variable "format_schema_type" {
-  description = "Format schema type"
-  default     = "FORMAT_SCHEMA_TYPE_CAPNPROTO"
-}
-
-variable "format_schema_uri" {
-  description = "Format schema URI"
-  default     = "https://storage.yandexcloud.net/ch-data/schema.proto"
-}
-
-variable "ml_model_name" {
-  description = "ML model name"
-  default     = "test_model"
-}
-
-variable "ml_model_type" {
-  description = "ML model type"
-  default     = "ML_MODEL_TYPE_CATBOOST"
-}
-
-variable "ml_model_uri" {
-  description = "ML model URI"
-  default     = "https://storage.yandexcloud.net/ch-data/train.csv"
-}
-
 variable "service_account_id" {
   description = "Service account ID"
   default     = "your_service_account_id"

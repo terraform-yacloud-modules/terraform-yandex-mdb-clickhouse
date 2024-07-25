@@ -1,6 +1,4 @@
 provider "yandex" {
-#   token     = var.yc_token
-#   cloud_id  = var.yc_cloud_id
   folder_id = var.folder_id
   zone      = var.yc_zone
 }
@@ -137,18 +135,6 @@ resource "yandex_mdb_clickhouse_cluster" "clickhouse_cluster" {
     type      = "CLICKHOUSE"
     zone      = var.yc_zone
     subnet_id = yandex_vpc_subnet.clickhouse_subnet.id
-  }
-
-  format_schema {
-    name = var.format_schema_name
-    type = var.format_schema_type
-    uri  = var.format_schema_uri
-  }
-
-  ml_model {
-    name = var.ml_model_name
-    type = var.ml_model_type
-    uri  = var.ml_model_uri
   }
 
   service_account_id = var.service_account_id
