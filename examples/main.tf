@@ -2,7 +2,7 @@ module "iam_accounts" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account"
 
   name      = "iam"
-  folder_id = "xxxx"
+  folder_id = "xxx"
   folder_roles = [
     "admin",
   ]
@@ -16,8 +16,8 @@ module "iam_accounts" {
 module "clickhouse" {
   source = "../"
 
-  folder_id    = "xxxx"
-  yc_zone      = "ru-central1-a"
+  folder_id    = "xxx"
+  zone      = "ru-central1-a"
 
   cluster_name = "test-clickhouse-cluster"
   environment  = "PRODUCTION"
