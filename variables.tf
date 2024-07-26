@@ -9,6 +9,16 @@ variable "zone" {
   type        = string
 }
 
+variable "subnet_id" {
+  description = "The ID of the subnet, to which the host belongs. The subnet must be a part of the network to which the cluster belongs"
+  type        = string
+}
+
+variable "network_id" {
+  description = "ID of the network, to which the Redis cluster belongs"
+  type        = string
+}
+
 variable "cluster_name" {
   description = "Name of the ClickHouse cluster"
   type        = string

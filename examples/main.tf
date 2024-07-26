@@ -17,6 +17,8 @@ module "clickhouse" {
   source = "../"
 
   folder_id    = "xxx"
+  network_id   = "xxx"
+  subnet_id    = "xxx"
 
   cluster_name = "test-clickhouse-cluster"
 

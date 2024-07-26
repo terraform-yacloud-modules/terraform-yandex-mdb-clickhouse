@@ -1,23 +1,10 @@
-provider "yandex" {
-  folder_id = var.folder_id
-  zone      = var.zone
-}
-
-resource "yandex_vpc_network" "clickhouse_network" {
-  name = "clickhouse-network"
-}
-
-resource "yandex_vpc_subnet" "clickhouse_subnet" {
-  name           = "clickhouse-subnet"
-  zone           = var.zone
-  network_id     = yandex_vpc_network.clickhouse_network.id
-  v4_cidr_blocks = ["10.0.0.0/24"]
-}
+data "yandex_client_config" "client" {}
 
 resource "yandex_mdb_clickhouse_cluster" "clickhouse_cluster" {
   name        = var.cluster_name
   environment = var.environment
-  network_id  = yandex_vpc_network.clickhouse_network.id
+  folder_id   = var.folder_id == null ? data.yandex_client_config.client.folder_id : var.folder_id
+  network_id  = var.network_id
 
   clickhouse {
     resources {
@@ -134,7 +121,7 @@ resource "yandex_mdb_clickhouse_cluster" "clickhouse_cluster" {
   host {
     type      = "CLICKHOUSE"
     zone      = var.zone
-    subnet_id = yandex_vpc_subnet.clickhouse_subnet.id
+    subnet_id = var.subnet_id
   }
 
   service_account_id = var.service_account_id
