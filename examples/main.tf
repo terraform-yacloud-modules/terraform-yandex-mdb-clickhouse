@@ -17,14 +17,8 @@ module "clickhouse" {
   source = "../"
 
   folder_id    = "xxx"
-  zone      = "ru-central1-a"
 
   cluster_name = "test-clickhouse-cluster"
-  environment  = "PRODUCTION"
-
-  resource_preset_id = "s2.micro"
-  disk_type_id       = "network-ssd"
-  disk_size          = 32
 
   database_name = "db_name"
   user_name     = "user"

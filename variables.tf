@@ -17,13 +17,13 @@ variable "cluster_name" {
 variable "environment" {
   description = "Deployment environment of the ClickHouse cluster"
   type        = string
-  default     = "PRODUCTION"
+  default     = "PRODUCTION"  # "PRODUCTION" or "PRESTABLE"
 }
 
 variable "resource_preset_id" {
   description = "The ID of the preset for computational resources available to a ClickHouse host"
   type        = string
-  default     = "s2.micro"
+  default     = "s3-c2-m8" # https://yandex.cloud/en/docs/managed-clickhouse/concepts/instance-types
 }
 
 variable "disk_type_id" {
@@ -35,7 +35,7 @@ variable "disk_type_id" {
 variable "disk_size" {
   description = "Volume of the storage available to a ClickHouse host, in gigabytes"
   type        = number
-  default     = 32
+  default     = 33
 }
 
 variable "log_level" {
@@ -428,7 +428,6 @@ variable "quota_errors" {
 variable "service_account_id" {
   description = "Service account ID"
   type        = string
-  default     = "your_service_account_id"
 }
 
 variable "cloud_storage_enabled" {
