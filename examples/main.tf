@@ -2,7 +2,6 @@ module "iam_accounts" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account"
 
   name      = "iam"
-  folder_id = "xxx"
   folder_roles = [
     "admin",
   ]
@@ -16,7 +15,6 @@ module "iam_accounts" {
 module "clickhouse" {
   source = "../"
 
-  folder_id    = "xxx"
   network_id   = "xxx"
   subnet_id    = "xxx"
 

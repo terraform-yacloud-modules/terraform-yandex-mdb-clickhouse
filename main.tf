@@ -3,7 +3,7 @@ data "yandex_client_config" "client" {}
 resource "yandex_mdb_clickhouse_cluster" "clickhouse_cluster" {
   name        = var.cluster_name
   environment = var.environment
-  folder_id   = var.folder_id == null ? data.yandex_client_config.client.folder_id : var.folder_id
+  folder_id   = data.yandex_client_config.client.folder_id
   network_id  = var.network_id
 
   clickhouse {
