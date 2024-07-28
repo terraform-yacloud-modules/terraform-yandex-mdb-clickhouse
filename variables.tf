@@ -22,7 +22,7 @@ variable "cluster_name" {
 variable "environment" {
   description = "Deployment environment of the ClickHouse cluster"
   type        = string
-  default     = "PRODUCTION"  # "PRODUCTION" or "PRESTABLE"
+  default     = "PRODUCTION" # "PRODUCTION" or "PRESTABLE"
 }
 
 variable "resource_preset_id" {
