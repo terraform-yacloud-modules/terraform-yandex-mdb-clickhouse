@@ -1,8 +1,3 @@
-variable "folder_id" {
-  description = "Yandex Cloud folder ID"
-  type        = string
-}
-
 variable "zone" {
   description = "Yandex Cloud zone"
   default     = "ru-central1-a"
