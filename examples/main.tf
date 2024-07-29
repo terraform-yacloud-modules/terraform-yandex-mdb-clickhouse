@@ -1,7 +1,7 @@
 module "iam_accounts" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
 
-  name      = "iam"
+  name = "iam"
   folder_roles = [
     "admin",
   ]
@@ -15,8 +15,8 @@ module "iam_accounts" {
 module "clickhouse" {
   source = "../"
 
-  network_id   = "xxx"
-  subnet_id    = "xxx"
+  network_id = "xxx"
+  subnet_id  = "xxx"
 
   cluster_name = "test-clickhouse-cluster"
 
