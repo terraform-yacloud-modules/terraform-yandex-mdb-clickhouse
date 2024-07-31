@@ -119,7 +119,28 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_clickhouse_cluster_host"></a> [clickhouse\_cluster\_host](#output\_clickhouse\_cluster\_host) | FQDN of the first host in the ClickHouse cluster |
+| <a name="output_clickhouse_config"></a> [clickhouse\_config](#output\_clickhouse\_config) | Configuration of the ClickHouse subcluster |
+| <a name="output_cloud_storage_enabled"></a> [cloud\_storage\_enabled](#output\_cloud\_storage\_enabled) | Whether to use Yandex Object Storage for storing ClickHouse data |
+| <a name="output_created_at"></a> [created\_at](#output\_created\_at) | Timestamp of cluster creation |
+| <a name="output_databases"></a> [databases](#output\_databases) | A list of databases in the ClickHouse cluster |
+| <a name="output_deletion_protection"></a> [deletion\_protection](#output\_deletion\_protection) | Inhibits deletion of the cluster |
+| <a name="output_description"></a> [description](#output\_description) | Description of the ClickHouse cluster |
+| <a name="output_environment"></a> [environment](#output\_environment) | Deployment environment of the ClickHouse cluster |
+| <a name="output_folder_id"></a> [folder\_id](#output\_folder\_id) | ID of the folder that the resource belongs to |
+| <a name="output_format_schemas"></a> [format\_schemas](#output\_format\_schemas) | A list of format schemas in the ClickHouse cluster |
+| <a name="output_hosts"></a> [hosts](#output\_hosts) | A list of hosts in the ClickHouse cluster |
+| <a name="output_id"></a> [id](#output\_id) | ID of the ClickHouse cluster |
+| <a name="output_labels"></a> [labels](#output\_labels) | A set of key/value label pairs to assign to the ClickHouse cluster |
+| <a name="output_maintenance_window"></a> [maintenance\_window](#output\_maintenance\_window) | Maintenance policy of the ClickHouse cluster |
+| <a name="output_ml_models"></a> [ml\_models](#output\_ml\_models) | A list of machine learning models in the ClickHouse cluster |
+| <a name="output_name"></a> [name](#output\_name) | Name of the ClickHouse cluster |
+| <a name="output_network_id"></a> [network\_id](#output\_network\_id) | ID of the network to which the ClickHouse cluster belongs |
+| <a name="output_security_group_ids"></a> [security\_group\_ids](#output\_security\_group\_ids) | A set of ids of security groups assigned to hosts of the cluster |
+| <a name="output_service_account_id"></a> [service\_account\_id](#output\_service\_account\_id) | ID of the service account used for access to Yandex Object Storage |
+| <a name="output_shard_groups"></a> [shard\_groups](#output\_shard\_groups) | A list of shard groups in the ClickHouse cluster |
+| <a name="output_shards"></a> [shards](#output\_shards) | A list of shards in the ClickHouse cluster |
+| <a name="output_users"></a> [users](#output\_users) | A list of users in the ClickHouse cluster |
+| <a name="output_zookeeper_config"></a> [zookeeper\_config](#output\_zookeeper\_config) | Configuration of the ZooKeeper subcluster |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## License
