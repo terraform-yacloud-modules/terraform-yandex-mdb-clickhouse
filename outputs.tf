@@ -97,7 +97,7 @@ output "service_account_id" {
 
 output "cloud_storage_enabled" {
   description = "Whether to use Yandex Object Storage for storing ClickHouse data"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.cloud_storage.0.enabled
+  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.cloud_storage[0].enabled
 }
 
 output "maintenance_window" {
