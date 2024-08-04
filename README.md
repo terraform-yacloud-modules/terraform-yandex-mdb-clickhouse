@@ -1,6 +1,8 @@
-# Yandex Cloud <RESOURCE> Terraform module
+# Yandex Cloud ClickHouse Terraform module
 
-Terraform module which creates Yandex Cloud <RESOURCE> resources.
+Terraform module which creates Yandex Cloud ClickHouse resources.
+
+Fork of https://github.com/polina-yudina/terraform-yc-clickhouse
 
 ## Examples
 
