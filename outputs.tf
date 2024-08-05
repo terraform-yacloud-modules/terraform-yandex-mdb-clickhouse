@@ -1,111 +1,63 @@
-output "id" {
-  description = "ID of the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.id
+output "cluster_id" {
+  description = "ClickHouse cluster ID."
+  value       = yandex_mdb_clickhouse_cluster.this.id
 }
 
-output "name" {
-  description = "Name of the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.name
+output "cluster_name" {
+  description = "ClickHouse cluster name."
+  value       = yandex_mdb_clickhouse_cluster.this.name
 }
 
-output "environment" {
-  description = "Deployment environment of the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.environment
+output "cluster_host_zones_list" {
+  description = "ClickHouse cluster host zones."
+  value       = [yandex_mdb_clickhouse_cluster.this.host[*].zone]
 }
 
-output "network_id" {
-  description = "ID of the network to which the ClickHouse cluster belongs"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.network_id
+output "cluster_fqdns_list" {
+  description = "ClickHouse cluster nodes FQDN list."
+  value       = [yandex_mdb_clickhouse_cluster.this.host[*].fqdn]
 }
 
-output "folder_id" {
-  description = "ID of the folder that the resource belongs to"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.folder_id
-}
-
-output "description" {
-  description = "Description of the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.description
-}
-
-output "labels" {
-  description = "A set of key/value label pairs to assign to the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.labels
-}
-
-output "security_group_ids" {
-  description = "A set of ids of security groups assigned to hosts of the cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.security_group_ids
-}
-
-output "deletion_protection" {
-  description = "Inhibits deletion of the cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.deletion_protection
-}
-
-output "clickhouse_config" {
-  description = "Configuration of the ClickHouse subcluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.clickhouse
+output "cluster_users" {
   sensitive   = true
-}
-
-output "zookeeper_config" {
-  description = "Configuration of the ZooKeeper subcluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.zookeeper
+  description = "A list of users with passwords."
+  value       = [
+    for u in yandex_mdb_clickhouse_cluster.this.user[*] : {
+      user     = u["name"]
+      password = u["password"]
+    }
+  ]
 }
 
 output "databases" {
-  description = "A list of databases in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.database
+  description = "A list of databases names."
+  value       = [for db in var.databases : db.name]
 }
 
-output "users" {
-  description = "A list of users in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.user
-  sensitive   = true
-}
+output "connection" {
+  description = <<EOF
+    How connect to ClickHouse cluster?
 
-output "hosts" {
-  description = "A list of hosts in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.host
-}
+    1. Install certificate
 
-output "shards" {
-  description = "A list of shards in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.shard
-}
+      mkdir -p /usr/local/share/ca-certificates/Yandex/ && \\
+      wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" -O /usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt && \\
+      chmod 0655 /usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt
 
-output "shard_groups" {
-  description = "A list of shard groups in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.shard_group
-}
+    2. Upload config.
 
-output "format_schemas" {
-  description = "A list of format schemas in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.format_schema
-}
+      mkdir --parents ~/.clickhouse-client && \\
+      wget "https://storage.yandexcloud.net/doc-files/clickhouse-client.conf.example" -O ~/.clickhouse-client/config.xml
 
-output "ml_models" {
-  description = "A list of machine learning models in the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.ml_model
-}
+    3. Run connection string from the output value, for example
 
-output "service_account_id" {
-  description = "ID of the service account used for access to Yandex Object Storage"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.service_account_id
-}
+      clickhouse-client --host rc1a-xxxxxxxxxxxxxxxx.mdb.yandexcloud.net \
+                  --secure \
+                  --user user_name \
+                  --database database_name \
+                  --port 9440 \
+                  --ask-password
+  EOF
 
-output "cloud_storage_enabled" {
-  description = "Whether to use Yandex Object Storage for storing ClickHouse data"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.cloud_storage[0].enabled
-}
-
-output "maintenance_window" {
-  description = "Maintenance policy of the ClickHouse cluster"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.maintenance_window
-}
-
-output "created_at" {
-  description = "Timestamp of cluster creation"
-  value       = yandex_mdb_clickhouse_cluster.clickhouse_cluster.created_at
+  value = "clickhouse-client --host c-${yandex_mdb_clickhouse_cluster.this.id}.rw.mdb.yandexcloud.net --secure --user ${var.users[0]["name"]} --database ${var.databases[0]["name"]} --port 9440 --ask-password"
 }

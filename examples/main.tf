@@ -37,15 +37,76 @@ module "clickhouse" {
   source = "../"
 
   network_id = module.network.vpc_id
-  subnet_id  = module.network.private_subnets_ids[0]
 
-  cluster_name = "test-clickhouse-cluster"
+  users = [
+    {
+      name     = "user1"
+      password = "password1"
+      quota    = [
+        {
+          interval_duration = "3600000"
+          queries           = 10000
+          errors            = 1000
+        }
+      ]
+      permission = [
+        {
+          database_name = "db_name"
+        }
+      ]
+      settings = {
+        max_memory_usage_for_user               = 1000000000
+        read_overflow_mode                      = "throw"
+        output_format_json_quote_64bit_integers = true
+      }
+    }
+  ]
 
-  database_name = "db_name"
-  user_name     = "user"
-  user_password = "your_password"
+  databases = [
+    {
+      name = "db_name"
+    }
+  ]
 
-  service_account_id = module.iam_accounts.id
+  hosts = [
+    {
+      type             = "CLICKHOUSE"
+      zone             = "ru-central1-a"
+      subnet_id        = module.network.private_subnets_ids[0]
+      assign_public_ip = true
+    }
+  ]
+
+  # Optional variables
+  name                        = "clickhouse-cluster"
+  clickhouse_disk_size         = 10
+  clickhouse_disk_type_id      = "network-ssd"
+  clickhouse_resource_preset_id = "s3-c2-m8"
+  environment                 = "PRODUCTION"
+  clickhouse_version          = "23.8"
+  description                 = "ClickHouse cluster description"
+  folder_id                   = data.yandex_client_config.client.folder_id
+  labels                      = {}
+  backup_window_start         = {
+    hours   = "03"
+    minutes = "00"
+  }
+  access                      = {
+    data_lens     = false
+    metrika       = false
+    web_sql       = false
+    serverless    = false
+    yandex_query  = false
+    data_transfer = false
+  }
+  zookeeper_disk_size         = 33
+  zookeeper_disk_type_id      = "network-ssd"
+  zookeeper_resource_preset_id = "b3-c1-m4"
+  shard_group                 = {
+    name        = "single_shard_group"
+    shard_names = ["shard1"]
+    description = "Cluster configuration that contain only shard1"
+  }
 
   depends_on = [module.iam_accounts, module.network]
 }
