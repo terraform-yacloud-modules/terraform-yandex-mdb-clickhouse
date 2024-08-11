@@ -34,7 +34,7 @@ module "network" {
 
 
 module "clickhouse" {
-  source = "../"
+  source = "../../"
 
   network_id = module.network.vpc_id
 
@@ -42,23 +42,6 @@ module "clickhouse" {
     {
       name     = "user1"
       password = "password1"
-      quota    = [
-        {
-          interval_duration = "3600000"
-          queries           = 10000
-          errors            = 1000
-        }
-      ]
-      permission = [
-        {
-          database_name = "db_name"
-        }
-      ]
-      settings = {
-        max_memory_usage_for_user               = 1000000000
-        read_overflow_mode                      = "throw"
-        output_format_json_quote_64bit_integers = true
-      }
     }
   ]
 
@@ -86,27 +69,6 @@ module "clickhouse" {
   clickhouse_version          = "23.8"
   description                 = "ClickHouse cluster description"
   folder_id                   = data.yandex_client_config.client.folder_id
-  labels                      = {}
-  backup_window_start         = {
-    hours   = "03"
-    minutes = "00"
-  }
-  access                      = {
-    data_lens     = false
-    metrika       = false
-    web_sql       = false
-    serverless    = false
-    yandex_query  = false
-    data_transfer = false
-  }
-  zookeeper_disk_size         = 33
-  zookeeper_disk_type_id      = "network-ssd"
-  zookeeper_resource_preset_id = "b3-c1-m4"
-  shard_group                 = {
-    name        = "single_shard_group"
-    shard_names = ["shard1"]
-    description = "Cluster configuration that contain only shard1"
-  }
 
   depends_on = [module.iam_accounts, module.network]
 }
