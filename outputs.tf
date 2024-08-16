@@ -21,7 +21,7 @@ output "cluster_fqdns_list" {
 output "cluster_users" {
   sensitive   = true
   description = "A list of users with passwords."
-  value       = [
+  value = [
     for u in yandex_mdb_clickhouse_cluster.this.user[*] : {
       user     = u["name"]
       password = u["password"]

@@ -5,7 +5,7 @@ locals {
 }
 
 resource "random_password" "password" {
-  for_each         = {for v in var.users : v.name => v if v.password == null}
+  for_each         = { for v in var.users : v.name => v if v.password == null }
   length           = 16
   special          = true
   min_lower        = 1
