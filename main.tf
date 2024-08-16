@@ -348,9 +348,9 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
       dynamic "resources" {
         for_each = range(shard.value.resources == null ? 0 : 1)
         content {
-          resource_preset_id = resources.value.resource_preset_id
-          disk_size          = resources.value.disk_size
-          disk_type_id       = resources.value.disk_type_id
+          resource_preset_id = shard.value.resources.resource_preset_id
+          disk_size          = shard.value.resources.disk_size
+          disk_type_id       = shard.value.resources.disk_type_id
         }
       }
     }
