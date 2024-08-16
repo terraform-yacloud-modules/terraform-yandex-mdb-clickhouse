@@ -159,10 +159,6 @@ variable "users" {
     }), null)
   }))
   default = []
-  validation {
-    condition     = length(var.users) > 0
-    error_message = "At least one user must be defined."
-  }
 }
 
 variable "databases" {
@@ -177,10 +173,6 @@ variable "databases" {
     name = string
   }))
   default = []
-  validation {
-    condition     = length(var.databases) > 0
-    error_message = "At least one database must be defined."
-  }
 }
 
 variable "hosts" {
