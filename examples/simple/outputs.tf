@@ -32,4 +32,5 @@ output "databases" {
 output "connection" {
   description = "The connection in which the ClickHouse cluster is deployed."
   value       = module.clickhouse.connection
+  sensitive   = true
 }
