@@ -9,17 +9,17 @@ output "cluster_name" {
 }
 
 output "cluster_host_zones_list" {
-  description = "The cluster_host_zones_list of the ClickHouse cluster."
+  description = "The list of zones where the ClickHouse cluster hosts are located."
   value       = module.clickhouse.cluster_host_zones_list
 }
 
 output "cluster_fqdns_list" {
-  description = "The fully qualified domain name (FQDN) of the ClickHouse cluster."
+  description = "The list of fully qualified domain names (FQDN) for the ClickHouse cluster nodes."
   value       = module.clickhouse.cluster_fqdns_list
 }
 
 output "cluster_users" {
-  description = "The list of users created in the ClickHouse cluster."
+  description = "The list of users created in the ClickHouse cluster, including their passwords."
   value       = module.clickhouse.cluster_users
   sensitive   = true
 }
