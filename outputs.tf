@@ -59,5 +59,6 @@ output "connection" {
                   --ask-password
   EOF
 
-  value = "clickhouse-client --host c-${yandex_mdb_clickhouse_cluster.this.id}.rw.mdb.yandexcloud.net --secure --port 9440 --ask-password"
+  value       = "clickhouse-client --host ${tolist(yandex_mdb_clickhouse_cluster.this.host)[0].fqdn} --secure --user ${tolist(yandex_mdb_clickhouse_cluster.this.user)[0].name} --database ${var.databases[0].name} --port 9440 --ask-password"
+  sensitive   = true
 }
