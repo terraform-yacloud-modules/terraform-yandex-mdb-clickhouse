@@ -283,11 +283,7 @@ variable "clickhouse_version" {
   EOF
 
   type    = string
-  default = "23.8"
-  validation {
-    condition     = contains(["23.8", "24.3", "24.4", "24.5", "24.6"], var.clickhouse_version)
-    error_message = "Allowed ClickHouse versions are 23.8, 24.3, 24.4, 24.5, 24.6."
-  }
+  default = "24.8"
 }
 
 variable "description" {
