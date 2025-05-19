@@ -66,7 +66,7 @@ module "clickhouse" {
   clickhouse_disk_type_id       = "network-ssd"
   clickhouse_resource_preset_id = "s3-c2-m8"
   environment                   = "PRODUCTION"
-  clickhouse_version            = "24.3"
+  clickhouse_version            = "24.8"
   description                   = "ClickHouse cluster description"
   folder_id                     = data.yandex_client_config.client.folder_id
 

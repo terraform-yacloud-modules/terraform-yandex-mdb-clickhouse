@@ -279,7 +279,7 @@ variable "clickhouse_version" {
   description = <<EOF
     (Optional) ClickHouse version.
 
-    Default: "23.8"
+    Default: "24.8"
   EOF
 
   type    = string
