@@ -1,5 +1,5 @@
 output "cluster_id" {
-  description = "Идентификатор кластера ClickHouse"
+  description = "ClickHouse cluster ID."
   value       = yandex_mdb_clickhouse_cluster.this.id
 }
 
