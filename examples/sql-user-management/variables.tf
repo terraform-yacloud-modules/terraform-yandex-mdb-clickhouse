@@ -44,7 +44,7 @@ variable "clickhouse_clusters" {
       disk_type_id       = "network-ssd"
       resource_preset_id = "s2.micro"
       environment        = "PRODUCTION"
-      version            = "23.8"
+      version            = "24.8"
       description        = "ycmodules example"
 
       sql_user_management     = true
