@@ -24,11 +24,11 @@ locals {
       sql_database_management = v["sql_database_management"]
 
       shards = v["shards"]
-      hosts  = [
+      hosts = [
         for obj in v["hosts"] : {
-          type      = obj["type"]
-          zone      = obj["zone"]
-          subnet_id = lookup(obj, "assign_public_ip", false) ? local.zone2pubsubnet[obj["zone"]] : local.zone2prvsubnet[obj["zone"]]
+          type             = obj["type"]
+          zone             = obj["zone"]
+          subnet_id        = lookup(obj, "assign_public_ip", false) ? local.zone2pubsubnet[obj["zone"]] : local.zone2prvsubnet[obj["zone"]]
           assign_public_ip = lookup(obj, "assign_public_ip", null)
         }
       ]
@@ -53,7 +53,7 @@ module "network" {
 
   azs = var.azs
 
-  create_nat_gateway =true
+  create_nat_gateway = true
 
   public_subnets  = var.subnets["public"]
   private_subnets = var.subnets["private"]
@@ -64,10 +64,10 @@ module "clickhouse" {
 
   source = "../../"
 
-  name = format("%s-%s", var.blank_name, each.key)
+  name   = format("%s-%s", var.blank_name, each.key)
   labels = var.labels
 
-  network_id = module.network.vpc_id
+  network_id         = module.network.vpc_id
   security_group_ids = []
 
   access              = each.value["access"]
@@ -84,7 +84,7 @@ module "clickhouse" {
 
   sql_user_management     = each.value["sql_user_management"]
   sql_database_management = each.value["sql_database_management"]
-  admin_password          = each.value["sql_user_management"] ? random_password.clickhouse_admin_password[each.key].result: null
+  admin_password          = each.value["sql_user_management"] ? random_password.clickhouse_admin_password[each.key].result : null
 
   shards                   = each.value["shards"]
   hosts                    = each.value["hosts"]
@@ -118,10 +118,10 @@ module "clickhouse_secrets" {
 
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-lockbox.git?ref=v1.0.0"
 
-  name = format("%s-clickhouse-%s", var.blank_name, each.key)
+  name   = format("%s-clickhouse-%s", var.blank_name, each.key)
   labels = var.labels
 
-  entries =  {
+  entries = {
     "admin-password" : random_password.clickhouse_admin_password[each.key].result
   }
 

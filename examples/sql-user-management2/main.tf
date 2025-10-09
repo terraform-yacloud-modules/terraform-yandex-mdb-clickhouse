@@ -130,38 +130,38 @@ module "clickhouse" {
   # Окно обслуживания кластера.
   maintenance_window = {
     type = "WEEKLY" # Тип окна: ANYTIME или WEEKLY
-    day  = "SAT"     # День недели для обслуживания (MON, TUE, WED, THU, FRI, SAT, SUN)
-    hour = "01"      # Час начала обслуживания в UTC (0-23)
+    day  = "SAT"    # День недели для обслуживания (MON, TUE, WED, THU, FRI, SAT, SUN)
+    hour = "01"     # Час начала обслуживания в UTC (0-23)
   }
 
   # Расширенная конфигурация ClickHouse (секция <yandex> в config.xml).
   # Задаются только необходимые или измененные параметры.
   clickhouse_config = {
     # Настройки логирования
-    log_level                       = "INFORMATION" # Уровни: TRACE, DEBUG, INFORMATION, WARNING, ERROR
-    metric_log_enabled              = true
-    query_log_retention_size        = 21474836480 # 20GB
-    query_log_retention_time        = 604800000   # 7 дней в миллисекундах
-    text_log_enabled                = true
-    text_log_level                  = "WARNING"
-    text_log_retention_size         = 5368709120 # 5GB
+    log_level                = "INFORMATION" # Уровни: TRACE, DEBUG, INFORMATION, WARNING, ERROR
+    metric_log_enabled       = true
+    query_log_retention_size = 21474836480 # 20GB
+    query_log_retention_time = 604800000   # 7 дней в миллисекундах
+    text_log_enabled         = true
+    text_log_level           = "WARNING"
+    text_log_retention_size  = 5368709120 # 5GB
 
     # Настройки производительности и соединений
-    max_concurrent_queries          = 300
-    max_connections                 = 2048
-    keep_alive_timeout              = 300 # Секунды
+    max_concurrent_queries = 300
+    max_connections        = 2048
+    keep_alive_timeout     = 300 # Секунды
 
     # Настройки MergeTree таблиц
     merge_tree = {
       max_bytes_to_merge_at_min_space_in_pool = 107374182400 # 100GB
-      parts_to_throw_insert                   = 600 # Порог для ошибки "Too many parts"
+      parts_to_throw_insert                   = 600          # Порог для ошибки "Too many parts"
       replicated_deduplication_window         = 200
       min_bytes_for_wide_part                 = 104857600 # 100MB
     }
 
     # Настройки компрессии по умолчанию (если не указаны в таблице)
     compression = {
-      method              = "ZSTD" # Более сильное сжатие
+      method              = "ZSTD"   # Более сильное сжатие
       min_part_size       = 10485760 # 10MB
       min_part_size_ratio = 0.01
     }

@@ -33,7 +33,7 @@ variable "users" {
   type = list(object({
     name     = string
     password = optional(string)
-    quota    = optional(list(object({
+    quota = optional(list(object({
       interval_duration = string
       queries           = optional(number, null)
       errors            = optional(number, null)
@@ -435,8 +435,8 @@ variable "shards" {
   EOF
 
   type = list(object({
-    name      = string
-    weight    = optional(number, null)
+    name   = string
+    weight = optional(number, null)
     resources = optional(object({
       resource_preset_id = string
       disk_size          = number
@@ -639,16 +639,16 @@ variable "clickhouse_config" {
     trace_log_retention_size        = optional(number, 536870912)
     trace_log_retention_time        = optional(number, 2592000000)
     uncompressed_cache_size         = optional(number, 8589934592)
-    compression                     = optional(object({
+    compression = optional(object({
       method              = optional(string, null)
       min_part_size       = optional(number, null)
       min_part_size_ratio = optional(number, null)
     }), null)
     graphite_rollup = optional(object({
-      name    = string
+      name = string
       pattern = object({
-        function  = string
-        regexp    = optional(string, null)
+        function = string
+        regexp   = optional(string, null)
         retention = object({
           age       = number
           precision = number
@@ -662,7 +662,7 @@ variable "clickhouse_config" {
       sasl_password     = optional(string, null)
     }), null)
     kafka_topic = optional(object({
-      name     = string
+      name = string
       settings = optional(object({
         security_protocol = optional(string, null)
         sasl_mechanism    = optional(string, null)

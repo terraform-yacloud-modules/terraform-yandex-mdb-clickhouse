@@ -20,7 +20,7 @@ variable "labels" {
 #
 variable "subnets" {
   default = {
-    public = [["10.20.0.0/24"], ["10.21.0.0/24"], ["10.22.0.0/24"]]
+    public  = [["10.20.0.0/24"], ["10.21.0.0/24"], ["10.22.0.0/24"]]
     private = [["10.23.0.0/24"], ["10.24.0.0/24"], ["10.25.0.0/24"]]
   }
 }
@@ -36,8 +36,8 @@ variable "clickhouse_clusters" {
         yandex_query  = false
         data_transfer = false
       }
-      users = []
-      databases = []
+      users               = []
+      databases           = []
       deletion_protection = false
 
       disk_size          = 10
