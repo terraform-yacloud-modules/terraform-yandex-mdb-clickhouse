@@ -12,7 +12,7 @@ to give users references for how to use the module(s) as well as testing/validat
 module. If contributing to the project, please be sure to make any appropriate updates to the relevant examples to allow
 maintainers to test your changes and to keep the examples up to date for users. Thank you!
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -88,7 +88,7 @@ No modules.
 | <a name="output_cluster_users"></a> [cluster\_users](#output\_cluster\_users) | A list of users with passwords. |
 | <a name="output_connection"></a> [connection](#output\_connection) | How connect to ClickHouse cluster?<br/><br/>    1. Install certificate<br/><br/>      mkdir -p /usr/local/share/ca-certificates/Yandex/ && \\<br/>      wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" -O /usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt && \\<br/>      chmod 0655 /usr/local/share/ca-certificates/Yandex/YandexInternalRootCA.crt<br/><br/>    2. Upload config.<br/><br/>      mkdir --parents ~/.clickhouse-client && \\<br/>      wget "https://storage.yandexcloud.net/doc-files/clickhouse-client.conf.example" -O ~/.clickhouse-client/config.xml<br/><br/>    3. Run connection string from the output value, for example<br/><br/>      clickhouse-client --host rc1a-xxxxxxxxxxxxxxxx.mdb.yandexcloud.net \<br/>                  --secure \<br/>                  --user user\_name \<br/>                  --database database\_name \<br/>                  --port 9440 \<br/>                  --ask-password |
 | <a name="output_databases"></a> [databases](#output\_databases) | A list of databases names. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 ## License
 
