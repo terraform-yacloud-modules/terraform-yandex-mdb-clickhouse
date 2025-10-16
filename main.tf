@@ -408,4 +408,14 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
       description = var.shard_group.description
     }
   }
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      create = try(timeouts.value.create, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
 }
