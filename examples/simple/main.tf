@@ -71,4 +71,11 @@ module "clickhouse" {
   folder_id                     = data.yandex_client_config.client.folder_id
 
   depends_on = [module.iam_accounts, module.network]
+
+  timeouts = {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
+
 }
