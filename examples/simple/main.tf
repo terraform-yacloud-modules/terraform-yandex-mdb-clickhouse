@@ -60,7 +60,6 @@ module "clickhouse" {
     }
   ]
 
-  # Optional variables
   name                          = "clickhouse-cluster"
   clickhouse_disk_size          = 10
   clickhouse_disk_type_id       = "network-ssd"
