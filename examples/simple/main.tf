@@ -69,6 +69,54 @@ module "clickhouse" {
   description                   = "ClickHouse cluster description"
   folder_id                     = data.yandex_client_config.client.folder_id
 
+  zookeeper_disk_size          = 20
+  zookeeper_disk_type_id       = "network-ssd"
+  zookeeper_resource_preset_id = "s3-c2-m8"
+
+  admin_password = "MyClusterAdminPasswordSecure123$"
+
+  sql_user_management     = false
+  sql_database_management = false
+
+  embedded_keeper          = false
+  copy_schema_on_new_hosts = true
+  deletion_protection      = false
+
+  labels = {
+    project     = "default-project",
+    environment = "development"
+  }
+
+  backup_window_start = {
+    hours   = "03"
+    minutes = "00"
+  }
+
+  access = {
+    web_sql       = true
+    data_lens     = false
+    yandex_query  = false
+    data_transfer = false
+  }
+
+  maintenance_window = {
+    type = "WEEKLY"
+    day  = "SAT"
+    hour = "01"
+  }
+
+  clickhouse_config = {
+    log_level                = "INFORMATION"
+    timezone                 = "Europe/Moscow"
+    max_concurrent_queries   = 100
+    keep_alive_timeout       = 300
+    metric_log_enabled       = true
+    query_log_retention_size = 2147483648
+    merge_tree = {
+      parts_to_throw_insert = 300
+    }
+  }
+
   depends_on = [module.iam_accounts, module.network]
 
   timeouts = {
