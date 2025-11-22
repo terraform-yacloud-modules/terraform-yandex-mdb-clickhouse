@@ -83,6 +83,13 @@ module "clickhouse" {
   embedded_keeper               = true
   deletion_protection           = false
 
+  admin_password = "MyClusterAdminPasswordSecure123$"
+
+  sql_user_management     = false
+  sql_database_management = false
+
+  copy_schema_on_new_hosts = true
+
   labels = {
     project     = "alpha-project"
     environment = "staging"
@@ -113,9 +120,23 @@ module "clickhouse" {
     max_concurrent_queries   = 100
     keep_alive_timeout       = 300
     metric_log_enabled       = true
-    query_log_retention_size = 2147483648
+    query_log_retention_size = 21474836480
+    query_log_retention_time = 604800000
+    text_log_enabled         = true
+    text_log_level           = "WARNING"
+    text_log_retention_size  = 5368709120
+
     merge_tree = {
-      parts_to_throw_insert = 300
+      max_bytes_to_merge_at_min_space_in_pool = 107374182400
+      parts_to_throw_insert                   = 600
+      replicated_deduplication_window         = 200
+      min_bytes_for_wide_part                 = 104857600
+    }
+
+    compression = {
+      method              = "ZSTD"
+      min_part_size       = 10485760
+      min_part_size_ratio = 0.01
     }
   }
 

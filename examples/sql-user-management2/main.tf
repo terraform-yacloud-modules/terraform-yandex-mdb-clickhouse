@@ -82,8 +82,8 @@ module "clickhouse" {
     data_transfer = true
   }
 
-  zookeeper_disk_size = 20
-  zookeeper_disk_type_id = "network-ssd"
+  zookeeper_disk_size          = 20
+  zookeeper_disk_type_id       = "network-ssd"
   zookeeper_resource_preset_id = "s3-c2-m8"
 
   admin_password = "MyClusterAdminPasswordSecure123$"
