@@ -1,19 +1,5 @@
 data "yandex_client_config" "client" {}
 
-module "iam_accounts" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
-
-  name = "iam"
-  folder_roles = [
-    "admin",
-  ]
-  cloud_roles              = []
-  enable_static_access_key = false
-  enable_api_key           = false
-  enable_account_key       = false
-
-}
-
 module "network" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v1.0.0"
 
@@ -40,14 +26,41 @@ module "clickhouse" {
 
   users = [
     {
-      name     = "user1"
-      password = "password1"
+      name     = "developer"
+      password = "MySecurePassword123!"
+      permission = [
+        {
+          database_name = "main_database"
+        },
+        {
+          database_name = "analytics_data"
+        }
+      ]
+      settings = {
+        readonly         = 0
+        max_memory_usage = 10737418240
+        connect_timeout  = 1000
+      }
+    },
+    {
+      name = "reporter"
+      permission = [
+        {
+          database_name = "analytics_data"
+        }
+      ]
+      settings = {
+        readonly = 1
+      }
     }
   ]
 
   databases = [
     {
-      name = "db_name"
+      name = "main_database"
+    },
+    {
+      name = "analytics_data"
     }
   ]
 
@@ -60,18 +73,13 @@ module "clickhouse" {
     }
   ]
 
-  name                          = "clickhouse-cluster"
-  clickhouse_disk_size          = 10
-  clickhouse_disk_type_id       = "network-ssd"
-  clickhouse_resource_preset_id = "s3-c2-m8"
-  environment                   = "PRODUCTION"
+  name                          = "my-ch-cluster-stage"
+  description                   = "Кластер ClickHouse для staging окружения"
   clickhouse_version            = "24.8"
-  description                   = "ClickHouse cluster description"
-  folder_id                     = data.yandex_client_config.client.folder_id
-
-  zookeeper_disk_size          = 20
-  zookeeper_disk_type_id       = "network-ssd"
-  zookeeper_resource_preset_id = "s3-c2-m8"
+  environment                   = "PRESTABLE"
+  clickhouse_resource_preset_id = "s3-c2-m8"
+  clickhouse_disk_size          = 50
+  clickhouse_disk_type_id       = "network-ssd"
 
   admin_password = "MyClusterAdminPasswordSecure123$"
 
@@ -83,8 +91,9 @@ module "clickhouse" {
   deletion_protection      = false
 
   labels = {
-    project     = "default-project",
-    environment = "development"
+    project     = "alpha-project"
+    environment = "staging"
+    owner       = "data-team"
   }
 
   backup_window_start = {
@@ -111,13 +120,27 @@ module "clickhouse" {
     max_concurrent_queries   = 100
     keep_alive_timeout       = 300
     metric_log_enabled       = true
-    query_log_retention_size = 2147483648
+    query_log_retention_size = 21474836480
+    query_log_retention_time = 604800000
+    text_log_enabled         = true
+    text_log_level           = "WARNING"
+    text_log_retention_size  = 5368709120
+
     merge_tree = {
-      parts_to_throw_insert = 300
+      max_bytes_to_merge_at_min_space_in_pool = 107374182400
+      parts_to_throw_insert                   = 600
+      replicated_deduplication_window         = 200
+      min_bytes_for_wide_part                 = 104857600
+    }
+
+    compression = {
+      method              = "ZSTD"
+      min_part_size       = 10485760
+      min_part_size_ratio = 0.01
     }
   }
 
-  depends_on = [module.iam_accounts, module.network]
+  depends_on = [module.network]
 
   timeouts = {
     create = "30m"

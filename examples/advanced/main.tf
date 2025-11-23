@@ -80,15 +80,15 @@ module "clickhouse" {
   clickhouse_resource_preset_id = "s3-c2-m8"
   clickhouse_disk_size          = 50
   clickhouse_disk_type_id       = "network-ssd"
-  embedded_keeper               = true
-  deletion_protection           = false
 
   admin_password = "MyClusterAdminPasswordSecure123$"
 
   sql_user_management     = false
   sql_database_management = false
 
+  embedded_keeper          = false
   copy_schema_on_new_hosts = true
+  deletion_protection      = false
 
   labels = {
     project     = "alpha-project"
@@ -96,16 +96,16 @@ module "clickhouse" {
     owner       = "data-team"
   }
 
-  access = {
-    web_sql       = true
-    data_lens     = true
-    yandex_query  = false
-    data_transfer = true
-  }
-
   backup_window_start = {
     hours   = "03"
     minutes = "00"
+  }
+
+  access = {
+    web_sql       = true
+    data_lens     = false
+    yandex_query  = false
+    data_transfer = false
   }
 
   maintenance_window = {
@@ -141,4 +141,11 @@ module "clickhouse" {
   }
 
   depends_on = [module.network]
+
+  timeouts = {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
+
 }
