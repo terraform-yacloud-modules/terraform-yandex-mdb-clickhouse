@@ -21,12 +21,16 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
   network_id  = var.network_id
   environment = var.environment
 
-  version             = var.clickhouse_version
-  description         = var.description
-  folder_id           = local.folder_id
-  labels              = var.labels
-  security_group_ids  = var.security_group_ids
-  deletion_protection = var.deletion_protection
+  version                   = var.clickhouse_version
+  folder_id                 = local.folder_id
+  labels                    = var.labels
+  security_group_ids        = var.security_group_ids
+  deletion_protection       = var.deletion_protection
+  description               = var.description
+  backup_retain_period_days = var.backup_retain_period_days
+  disk_encryption_key_id    = var.disk_encryption_key_id
+  cluster_id                = var.cluster_id
+  service_account_id        = var.service_account_id
 
   clickhouse {
     resources {
@@ -71,10 +75,15 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
         dynamic "kafka" {
           for_each = range(var.clickhouse_config.kafka == null ? 0 : 1)
           content {
-            security_protocol = var.clickhouse_config.kafka.security_protocol
-            sasl_mechanism    = var.clickhouse_config.kafka.sasl_mechanism
-            sasl_username     = var.clickhouse_config.kafka.sasl_username
-            sasl_password     = var.clickhouse_config.kafka.sasl_password
+            auto_offset_reset                   = var.clickhouse_config.kafka.auto_offset_reset
+            debug                               = var.clickhouse_config.kafka.debug
+            enable_ssl_certificate_verification = var.clickhouse_config.kafka.enable_ssl_certificate_verification
+            max_poll_interval_ms                = var.clickhouse_config.kafka.max_poll_interval_ms
+            security_protocol                   = var.clickhouse_config.kafka.security_protocol
+            sasl_mechanism                      = var.clickhouse_config.kafka.sasl_mechanism
+            sasl_username                       = var.clickhouse_config.kafka.sasl_username
+            sasl_password                       = var.clickhouse_config.kafka.sasl_password
+            session_timeout_ms                  = var.clickhouse_config.kafka.session_timeout_ms
           }
         }
 
@@ -85,10 +94,15 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
             dynamic "settings" {
               for_each = range(var.clickhouse_config.kafka_topic.settings == null ? 0 : 1)
               content {
-                security_protocol = var.clickhouse_config.kafka_topic.security_protocol
-                sasl_mechanism    = var.clickhouse_config.kafka_topic.sasl_mechanism
-                sasl_username     = var.clickhouse_config.kafka_topic.sasl_username
-                sasl_password     = var.clickhouse_config.kafka_topic.sasl_password
+                auto_offset_reset                   = var.clickhouse_config.kafka_topic.settings.auto_offset_reset
+                debug                               = var.clickhouse_config.kafka_topic.settings.debug
+                enable_ssl_certificate_verification = var.clickhouse_config.kafka_topic.settings.enable_ssl_certificate_verification
+                max_poll_interval_ms                = var.clickhouse_config.kafka_topic.settings.max_poll_interval_ms
+                security_protocol                   = var.clickhouse_config.kafka_topic.settings.security_protocol
+                sasl_mechanism                      = var.clickhouse_config.kafka_topic.settings.sasl_mechanism
+                sasl_username                       = var.clickhouse_config.kafka_topic.settings.sasl_username
+                sasl_password                       = var.clickhouse_config.kafka_topic.settings.sasl_password
+                session_timeout_ms                  = var.clickhouse_config.kafka_topic.settings.session_timeout_ms
               }
             }
           }
@@ -105,10 +119,28 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
         dynamic "merge_tree" {
           for_each = range(var.clickhouse_config.merge_tree == null ? 0 : 1)
           content {
+            allow_remote_fs_zero_copy_replication                     = var.clickhouse_config.merge_tree.allow_remote_fs_zero_copy_replication
+            check_sample_column_is_correct                            = var.clickhouse_config.merge_tree.check_sample_column_is_correct
+            cleanup_delay_period                                      = var.clickhouse_config.merge_tree.cleanup_delay_period
+            inactive_parts_to_delay_insert                            = var.clickhouse_config.merge_tree.inactive_parts_to_delay_insert
+            inactive_parts_to_throw_insert                            = var.clickhouse_config.merge_tree.inactive_parts_to_throw_insert
+            max_avg_part_size_for_too_many_parts                      = var.clickhouse_config.merge_tree.max_avg_part_size_for_too_many_parts
+            max_bytes_to_merge_at_max_space_in_pool                   = var.clickhouse_config.merge_tree.max_bytes_to_merge_at_max_space_in_pool
             max_bytes_to_merge_at_min_space_in_pool                   = var.clickhouse_config.merge_tree.max_bytes_to_merge_at_min_space_in_pool
+            max_cleanup_delay_period                                  = var.clickhouse_config.merge_tree.max_cleanup_delay_period
+            max_merge_selecting_sleep_ms                              = var.clickhouse_config.merge_tree.max_merge_selecting_sleep_ms
+            max_number_of_merges_with_ttl_in_pool                     = var.clickhouse_config.merge_tree.max_number_of_merges_with_ttl_in_pool
+            max_parts_in_total                                        = var.clickhouse_config.merge_tree.max_parts_in_total
             max_replicated_merges_in_queue                            = var.clickhouse_config.merge_tree.max_replicated_merges_in_queue
+            merge_max_block_size                                      = var.clickhouse_config.merge_tree.merge_max_block_size
+            merge_selecting_sleep_ms                                  = var.clickhouse_config.merge_tree.merge_selecting_sleep_ms
+            merge_with_recompression_ttl_timeout                      = var.clickhouse_config.merge_tree.merge_with_recompression_ttl_timeout
+            merge_with_ttl_timeout                                    = var.clickhouse_config.merge_tree.merge_with_ttl_timeout
+            min_age_to_force_merge_on_partition_only                  = var.clickhouse_config.merge_tree.min_age_to_force_merge_on_partition_only
+            min_age_to_force_merge_seconds                            = var.clickhouse_config.merge_tree.min_age_to_force_merge_seconds
             min_bytes_for_wide_part                                   = var.clickhouse_config.merge_tree.min_bytes_for_wide_part
             min_rows_for_wide_part                                    = var.clickhouse_config.merge_tree.min_rows_for_wide_part
+            number_of_free_entries_in_pool_to_execute_mutation        = var.clickhouse_config.merge_tree.number_of_free_entries_in_pool_to_execute_mutation
             number_of_free_entries_in_pool_to_lower_max_size_of_merge = var.clickhouse_config.merge_tree.number_of_free_entries_in_pool_to_lower_max_size_of_merge
             parts_to_delay_insert                                     = var.clickhouse_config.merge_tree.parts_to_delay_insert
             parts_to_throw_insert                                     = var.clickhouse_config.merge_tree.parts_to_throw_insert
@@ -405,7 +437,6 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
     content {
       name        = var.shard_group.name
       shard_names = var.shard_group.shard_names
-      description = var.shard_group.description
     }
   }
 

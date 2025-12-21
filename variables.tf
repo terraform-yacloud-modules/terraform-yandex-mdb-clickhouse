@@ -31,8 +31,9 @@ variable "users" {
   EOF
 
   type = list(object({
-    name     = string
-    password = optional(string)
+    name              = string
+    password          = optional(string)
+    generate_password = optional(bool, false)
     quota = optional(list(object({
       interval_duration = string
       queries           = optional(number, null)
@@ -488,6 +489,7 @@ variable "cloud_storage" {
     - move_factor         - (Optional) Sets the minimum free space ratio in the cluster storage. If the free space is lower than this value, the data is transferred to Yandex Object Storage. Acceptable values are 0 to 1, inclusive.
     - data_cache_enabled  - (Optional) Enables temporary storage in the cluster repository of data requested from the object repository.
     - data_cache_max_size - (Optional) Defines the maximum amount of memory (in bytes) allocated in the cluster storage for temporary storage of data requested from the object storage.
+    - prefer_not_to_merge - (Optional) Disables merging of data parts in Yandex Object Storage.
 
     Default: null
   EOF
@@ -497,6 +499,7 @@ variable "cloud_storage" {
     move_factor         = optional(number, 0)
     data_cache_enabled  = optional(bool, false)
     data_cache_max_size = optional(number, 0)
+    prefer_not_to_merge = optional(bool, false)
   })
   default = null
 }
@@ -607,28 +610,66 @@ variable "clickhouse_config" {
   EOF
 
   type = object({
-    background_fetches_pool_size    = optional(number, 0)
-    background_pool_size            = optional(number, 0)
-    background_schedule_pool_size   = optional(number, 0)
-    default_database                = optional(string, "")
-    geobase_uri                     = optional(string, "")
-    keep_alive_timeout              = optional(number, 3)
-    log_level                       = optional(string, "DEBUG")
-    mark_cache_size                 = optional(number, 5368709120)
-    max_concurrent_queries          = optional(number, 500)
-    max_connections                 = optional(number, 4096)
-    max_partition_size_to_drop      = optional(number, 53687091200)
-    max_table_size_to_drop          = optional(number, 53687091200)
-    metric_log_enabled              = optional(bool, true)
-    metric_log_retention_size       = optional(number, 536870912)
-    metric_log_retention_time       = optional(number, 2592000000)
-    part_log_retention_size         = optional(number, 536870912)
-    part_log_retention_time         = optional(number, 2592000000)
-    query_log_retention_size        = optional(number, 1073741824)
-    query_log_retention_time        = optional(number, 2592000000)
+    asynchronous_insert_log_enabled               = optional(bool, false)
+    asynchronous_insert_log_retention_size        = optional(number, 0)
+    asynchronous_insert_log_retention_time        = optional(number, 0)
+    asynchronous_metric_log_enabled               = optional(bool, false)
+    asynchronous_metric_log_retention_size        = optional(number, 0)
+    asynchronous_metric_log_retention_time        = optional(number, 0)
+    background_buffer_flush_schedule_pool_size    = optional(number, 0)
+    background_common_pool_size                   = optional(number, 0)
+    background_distributed_schedule_pool_size     = optional(number, 0)
+    background_fetches_pool_size                  = optional(number, 0)
+    background_merges_mutations_concurrency_ratio = optional(number, 0)
+    background_message_broker_schedule_pool_size  = optional(number, 0)
+    background_move_pool_size                     = optional(number, 0)
+    background_pool_size                          = optional(number, 0)
+    background_schedule_pool_size                 = optional(number, 0)
+    default_database                              = optional(string, "")
+    dictionaries_lazy_load                        = optional(bool, false)
+    geobase_enabled                               = optional(bool, false)
+    geobase_uri                                   = optional(string, "")
+    jdbc_bridge = optional(object({
+      host = optional(string, "")
+      port = optional(number, 9019)
+    }), null)
+    keep_alive_timeout                    = optional(number, 3)
+    log_level                             = optional(string, "DEBUG")
+    mark_cache_size                       = optional(number, 5368709120)
+    max_concurrent_queries                = optional(number, 500)
+    max_connections                       = optional(number, 4096)
+    max_partition_size_to_drop            = optional(number, 53687091200)
+    max_table_size_to_drop                = optional(number, 53687091200)
+    metric_log_enabled                    = optional(bool, true)
+    metric_log_retention_size             = optional(number, 536870912)
+    metric_log_retention_time             = optional(number, 2592000000)
+    opentelemetry_span_log_enabled        = optional(bool, false)
+    opentelemetry_span_log_retention_size = optional(number, 0)
+    opentelemetry_span_log_retention_time = optional(number, 0)
+    part_log_retention_size               = optional(number, 536870912)
+    part_log_retention_time               = optional(number, 2592000000)
+    query_cache = optional(object({
+      max_entries             = optional(number, 1024)
+      max_entry_size_in_bytes = optional(number, 1048576)
+      max_entry_size_in_rows  = optional(number, 30000000)
+      max_size_in_bytes       = optional(number, 1073741824)
+    }), null)
+    query_log_retention_size = optional(number, 1073741824)
+    query_log_retention_time = optional(number, 2592000000)
+    query_masking_rules = optional(list(object({
+      name    = optional(string, "")
+      regexp  = string
+      replace = optional(string, "******")
+    })), [])
     query_thread_log_enabled        = optional(bool, true)
     query_thread_log_retention_size = optional(number, 536870912)
     query_thread_log_retention_time = optional(number, 2592000000)
+    query_views_log_enabled         = optional(bool, false)
+    query_views_log_retention_size  = optional(number, 0)
+    query_views_log_retention_time  = optional(number, 0)
+    session_log_enabled             = optional(bool, false)
+    session_log_retention_size      = optional(number, 0)
+    session_log_retention_time      = optional(number, 0)
     text_log_enabled                = optional(bool, false)
     text_log_level                  = optional(string, "TRACE")
     text_log_retention_size         = optional(number, 536870912)
@@ -639,13 +680,21 @@ variable "clickhouse_config" {
     trace_log_retention_size        = optional(number, 536870912)
     trace_log_retention_time        = optional(number, 2592000000)
     uncompressed_cache_size         = optional(number, 8589934592)
+    zookeeper_log_enabled           = optional(bool, false)
+    zookeeper_log_retention_size    = optional(number, 0)
+    zookeeper_log_retention_time    = optional(number, 0)
     compression = optional(object({
       method              = optional(string, null)
       min_part_size       = optional(number, null)
       min_part_size_ratio = optional(number, null)
+      level               = optional(number, null)
     }), null)
     graphite_rollup = optional(object({
-      name = string
+      name                = string
+      path_column_name    = optional(string, "")
+      time_column_name    = optional(string, "")
+      value_column_name   = optional(string, "")
+      version_column_name = optional(string, "")
       pattern = object({
         function = string
         regexp   = optional(string, null)
@@ -656,25 +705,53 @@ variable "clickhouse_config" {
       })
     }), null)
     kafka = optional(object({
-      security_protocol = optional(string, null)
-      sasl_mechanism    = optional(string, null)
-      sasl_username     = optional(string, null)
-      sasl_password     = optional(string, null)
+      auto_offset_reset                   = optional(string, null)
+      debug                               = optional(string, null)
+      enable_ssl_certificate_verification = optional(bool, null)
+      max_poll_interval_ms                = optional(number, null)
+      security_protocol                   = optional(string, null)
+      sasl_mechanism                      = optional(string, null)
+      sasl_username                       = optional(string, null)
+      sasl_password                       = optional(string, null)
+      session_timeout_ms                  = optional(number, null)
     }), null)
     kafka_topic = optional(object({
       name = string
       settings = optional(object({
-        security_protocol = optional(string, null)
-        sasl_mechanism    = optional(string, null)
-        sasl_username     = optional(string, null)
-        sasl_password     = optional(string, null)
+        auto_offset_reset                   = optional(string, null)
+        debug                               = optional(string, null)
+        enable_ssl_certificate_verification = optional(bool, null)
+        max_poll_interval_ms                = optional(number, null)
+        security_protocol                   = optional(string, null)
+        sasl_mechanism                      = optional(string, null)
+        sasl_username                       = optional(string, null)
+        sasl_password                       = optional(string, null)
+        session_timeout_ms                  = optional(number, null)
       }), null)
     }), null)
     merge_tree = optional(object({
-      max_bytes_to_merge_at_min_space_in_pool                   = optional(number, 53687091200)
+      allow_remote_fs_zero_copy_replication                     = optional(bool, false)
+      check_sample_column_is_correct                            = optional(bool, true)
+      cleanup_delay_period                                      = optional(number, 0)
+      inactive_parts_to_delay_insert                            = optional(number, 0)
+      inactive_parts_to_throw_insert                            = optional(number, 0)
+      max_avg_part_size_for_too_many_parts                      = optional(number, 0)
+      max_bytes_to_merge_at_max_space_in_pool                   = optional(number, 161061273600)
+      max_bytes_to_merge_at_min_space_in_pool                   = optional(number, 1048576)
+      max_cleanup_delay_period                                  = optional(number, 300)
+      max_merge_selecting_sleep_ms                              = optional(number, 60000)
+      max_number_of_merges_with_ttl_in_pool                     = optional(number, 0)
+      max_parts_in_total                                        = optional(number, 10000)
       max_replicated_merges_in_queue                            = optional(number, 16)
+      merge_max_block_size                                      = optional(number, 8192)
+      merge_selecting_sleep_ms                                  = optional(number, 0)
+      merge_with_recompression_ttl_timeout                      = optional(number, 14400)
+      merge_with_ttl_timeout                                    = optional(number, 14400)
+      min_age_to_force_merge_on_partition_only                  = optional(bool, false)
+      min_age_to_force_merge_seconds                            = optional(number, 0)
       min_bytes_for_wide_part                                   = optional(number, 0)
       min_rows_for_wide_part                                    = optional(number, 0)
+      number_of_free_entries_in_pool_to_execute_mutation        = optional(number, 20)
       number_of_free_entries_in_pool_to_lower_max_size_of_merge = optional(number, 8)
       parts_to_delay_insert                                     = optional(number, 150)
       parts_to_throw_insert                                     = optional(number, 300)
@@ -690,6 +767,46 @@ variable "clickhouse_config" {
   })
 
   default = null
+}
+
+variable "backup_retain_period_days" {
+  description = <<EOF
+    (Optional) The period in days during which backups are stored.
+
+    Default: null
+  EOF
+  type        = number
+  default     = null
+}
+
+variable "disk_encryption_key_id" {
+  description = <<EOF
+    (Optional) ID of the KMS key for cluster disk encryption.
+
+    Default: null
+  EOF
+  type        = string
+  default     = null
+}
+
+variable "cluster_id" {
+  description = <<EOF
+    (Optional) The cluster identifier.
+
+    Default: null
+  EOF
+  type        = string
+  default     = null
+}
+
+variable "service_account_id" {
+  description = <<EOF
+    (Optional) Service account which linked to the resource.
+
+    Default: null
+  EOF
+  type        = string
+  default     = null
 }
 
 variable "timeouts" {
