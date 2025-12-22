@@ -81,6 +81,61 @@ module "clickhouse" {
   clickhouse_disk_size          = 50
   clickhouse_disk_type_id       = "network-ssd"
 
+  # ZooKeeper configuration
+  zookeeper_disk_size          = 10
+  zookeeper_disk_type_id       = "network-ssd"
+  zookeeper_resource_preset_id = "s3-c2-m8"
+
+  # Shards configuration
+  shards = [
+    {
+      name   = "shard1"
+      weight = 1
+      resources = {
+        resource_preset_id = "s3-c2-m8"
+        disk_size          = 50
+        disk_type_id       = "network-ssd"
+      }
+    }
+  ]
+
+  # Shard group configuration
+  shard_group = {
+    name        = "default_shard_group"
+    shard_names = ["shard1"]
+    description = "Default shard group for distributed tables"
+  }
+
+  # Cloud storage configuration
+  cloud_storage = {
+    enabled             = false
+    move_factor         = 0.1
+    data_cache_enabled  = false
+    data_cache_max_size = 10737418240
+    prefer_not_to_merge = false
+  }
+
+  # Security groups
+  security_group_ids = []
+
+  # Backup retention
+  backup_retain_period_days = 7
+
+  # Disk encryption
+  disk_encryption_key_id = null
+
+  # Cluster ID (optional)
+  cluster_id = null
+
+  # Service account
+  service_account_id = null
+
+  # Format schema (optional)
+  format_schema = null
+
+  # ML model (optional)
+  ml_model = null
+
   admin_password = "MyClusterAdminPasswordSecure123$"
 
   sql_user_management     = false
