@@ -58,7 +58,7 @@ module "clickhouse" {
 
   environment = "PRODUCTION"
 
-  clickhouse_version = "24.8"
+  clickhouse_version = "25.8"
 
   description = "Production ClickHouse cluster for advanced analytics and reporting."
 
@@ -69,8 +69,8 @@ module "clickhouse" {
   }
 
   backup_window_start = {
-    hours   = "02"
-    minutes = "30"
+    hours   = 2
+    minutes = 30
   }
 
   access = {
@@ -101,11 +101,14 @@ module "clickhouse" {
   maintenance_window = {
     type = "WEEKLY"
     day  = "SAT"
-    hour = "01"
+    hour = 1
   }
 
   clickhouse_config = {
     log_level                = "INFORMATION"
+    timezone                 = "Asia/Omsk"
+    geobase_enabled          = false
+    dictionaries_lazy_load   = true
     metric_log_enabled       = true
     query_log_retention_size = 21474836480
     query_log_retention_time = 604800000
@@ -128,10 +131,24 @@ module "clickhouse" {
       method              = "ZSTD"
       min_part_size       = 10485760
       min_part_size_ratio = 0.01
+      level               = 3
     }
 
-    timezone = "Asia/Omsk"
+    query_cache = {
+      max_size_in_bytes       = 536870912
+      max_entries             = 512
+      max_entry_size_in_bytes = 524288
+      max_entry_size_in_rows  = 15000000
+    }
 
+    # Маскирование чувствительных данных в логах (актуально при sql_user_management)
+    query_masking_rules = [
+      {
+        name    = "mask_password"
+        regexp  = "(?i)password\\s*=\\s*['\"]?[^'\"\\s]+['\"]?"
+        replace = "password=******"
+      }
+    ]
   }
 
   depends_on = [module.network]

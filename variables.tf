@@ -278,13 +278,13 @@ variable "environment" {
 
 variable "clickhouse_version" {
   description = <<EOF
-    (Optional) ClickHouse version.
+    (Optional) ClickHouse version. Allowed: 25.3, 25.8, 25.11, 25.12, 26.1 (24.8 deprecated).
 
-    Default: "24.8"
+    Default: "25.8"
   EOF
 
   type    = string
-  default = "24.8"
+  default = "25.8"
 }
 
 variable "description" {
@@ -323,13 +323,14 @@ variable "labels" {
 variable "backup_window_start" {
   description = <<EOF
     (Optional) Time to start the daily backup, in the UTC timezone.
+    hours: 0-23, minutes: 0-59 (provider expects integer).
 
     Default: null
   EOF
 
   type = object({
-    hours   = string
-    minutes = optional(string, "00")
+    hours   = number
+    minutes = optional(number, 0)
   })
   default = null
 }
@@ -595,7 +596,7 @@ variable "maintenance_window" {
   type = object({
     type = string
     day  = optional(string, null)
-    hour = optional(string, null)
+    hour = optional(number, null) # 1-24 for WEEKLY window (UTC)
   })
   default = {
     type = "ANYTIME"
