@@ -1,3 +1,7 @@
+## v1.40.0 - 2026-03-15
+### Miscellaneous
+- dd1cb59 add graphite_rollup, and cloud_storage params; ([#72](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/72))
+
 ## v1.39.0 - 2026-03-02
 ### Chores
 - a5c121e chore(deps): bump hashicorp/setup-terraform from 3 to 4 ([#71](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/71))
