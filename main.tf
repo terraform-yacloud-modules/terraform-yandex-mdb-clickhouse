@@ -41,9 +41,15 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
     dynamic "config" {
       for_each = range(var.clickhouse_config == null ? 0 : 1)
       content {
-        background_fetches_pool_size  = var.clickhouse_config.background_fetches_pool_size
-        background_pool_size          = var.clickhouse_config.background_pool_size
-        background_schedule_pool_size = var.clickhouse_config.background_schedule_pool_size
+        background_buffer_flush_schedule_pool_size    = var.clickhouse_config.background_buffer_flush_schedule_pool_size
+        background_common_pool_size                   = var.clickhouse_config.background_common_pool_size
+        background_distributed_schedule_pool_size     = var.clickhouse_config.background_distributed_schedule_pool_size
+        background_fetches_pool_size                  = var.clickhouse_config.background_fetches_pool_size
+        background_merges_mutations_concurrency_ratio = var.clickhouse_config.background_merges_mutations_concurrency_ratio
+        background_message_broker_schedule_pool_size  = var.clickhouse_config.background_message_broker_schedule_pool_size
+        background_move_pool_size                     = var.clickhouse_config.background_move_pool_size
+        background_pool_size                          = var.clickhouse_config.background_pool_size
+        background_schedule_pool_size                 = var.clickhouse_config.background_schedule_pool_size
 
         dynamic "compression" {
           for_each = range(var.clickhouse_config.compression == null ? 0 : 1)
@@ -51,16 +57,23 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
             method              = var.clickhouse_config.compression.method
             min_part_size       = var.clickhouse_config.compression.min_part_size
             min_part_size_ratio = var.clickhouse_config.compression.min_part_size_ratio
+            level               = var.clickhouse_config.compression.level
           }
         }
 
-        default_database = var.clickhouse_config.default_database
-        geobase_uri      = var.clickhouse_config.geobase_uri
+        default_database       = var.clickhouse_config.default_database
+        dictionaries_lazy_load = var.clickhouse_config.dictionaries_lazy_load
+        geobase_enabled        = var.clickhouse_config.geobase_enabled
+        geobase_uri            = var.clickhouse_config.geobase_uri
 
         dynamic "graphite_rollup" {
           for_each = range(var.clickhouse_config.graphite_rollup == null ? 0 : 1)
           content {
-            name = var.clickhouse_config.graphite_rollup.name
+            name                = var.clickhouse_config.graphite_rollup.name
+            path_column_name    = var.clickhouse_config.graphite_rollup.path_column_name
+            time_column_name    = var.clickhouse_config.graphite_rollup.time_column_name
+            value_column_name   = var.clickhouse_config.graphite_rollup.value_column_name
+            version_column_name = var.clickhouse_config.graphite_rollup.version_column_name
             pattern {
               function = var.clickhouse_config.graphite_rollup.pattern.function
               regexp   = var.clickhouse_config.graphite_rollup.pattern.regexp
@@ -108,6 +121,14 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
           }
         }
 
+        dynamic "jdbc_bridge" {
+          for_each = range(var.clickhouse_config.jdbc_bridge == null ? 0 : 1)
+          content {
+            host = var.clickhouse_config.jdbc_bridge.host
+            port = var.clickhouse_config.jdbc_bridge.port
+          }
+        }
+
         keep_alive_timeout         = var.clickhouse_config.keep_alive_timeout
         log_level                  = var.clickhouse_config.log_level
         mark_cache_size            = var.clickhouse_config.mark_cache_size
@@ -150,16 +171,53 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
           }
         }
 
-        metric_log_enabled              = var.clickhouse_config.metric_log_enabled
-        metric_log_retention_size       = var.clickhouse_config.metric_log_retention_size
-        metric_log_retention_time       = var.clickhouse_config.metric_log_retention_time
-        part_log_retention_size         = var.clickhouse_config.part_log_retention_size
-        part_log_retention_time         = var.clickhouse_config.part_log_retention_time
-        query_log_retention_size        = var.clickhouse_config.query_log_retention_size
-        query_log_retention_time        = var.clickhouse_config.query_log_retention_time
-        query_thread_log_enabled        = var.clickhouse_config.query_thread_log_enabled
-        query_thread_log_retention_size = var.clickhouse_config.query_thread_log_retention_size
-        query_thread_log_retention_time = var.clickhouse_config.query_thread_log_retention_time
+        metric_log_enabled                     = var.clickhouse_config.metric_log_enabled
+        metric_log_retention_size              = var.clickhouse_config.metric_log_retention_size
+        metric_log_retention_time              = var.clickhouse_config.metric_log_retention_time
+        opentelemetry_span_log_enabled         = var.clickhouse_config.opentelemetry_span_log_enabled
+        opentelemetry_span_log_retention_size  = var.clickhouse_config.opentelemetry_span_log_retention_size
+        opentelemetry_span_log_retention_time  = var.clickhouse_config.opentelemetry_span_log_retention_time
+        part_log_retention_size                = var.clickhouse_config.part_log_retention_size
+        part_log_retention_time                = var.clickhouse_config.part_log_retention_time
+        query_log_retention_size               = var.clickhouse_config.query_log_retention_size
+        query_log_retention_time               = var.clickhouse_config.query_log_retention_time
+        query_thread_log_enabled               = var.clickhouse_config.query_thread_log_enabled
+        query_thread_log_retention_size        = var.clickhouse_config.query_thread_log_retention_size
+        query_thread_log_retention_time        = var.clickhouse_config.query_thread_log_retention_time
+        query_views_log_enabled                = var.clickhouse_config.query_views_log_enabled
+        query_views_log_retention_size         = var.clickhouse_config.query_views_log_retention_size
+        query_views_log_retention_time         = var.clickhouse_config.query_views_log_retention_time
+        session_log_enabled                    = var.clickhouse_config.session_log_enabled
+        session_log_retention_size             = var.clickhouse_config.session_log_retention_size
+        session_log_retention_time             = var.clickhouse_config.session_log_retention_time
+        asynchronous_insert_log_enabled        = var.clickhouse_config.asynchronous_insert_log_enabled
+        asynchronous_insert_log_retention_size = var.clickhouse_config.asynchronous_insert_log_retention_size
+        asynchronous_insert_log_retention_time = var.clickhouse_config.asynchronous_insert_log_retention_time
+        asynchronous_metric_log_enabled        = var.clickhouse_config.asynchronous_metric_log_enabled
+        asynchronous_metric_log_retention_size = var.clickhouse_config.asynchronous_metric_log_retention_size
+        asynchronous_metric_log_retention_time = var.clickhouse_config.asynchronous_metric_log_retention_time
+        zookeeper_log_enabled                  = var.clickhouse_config.zookeeper_log_enabled
+        zookeeper_log_retention_size           = var.clickhouse_config.zookeeper_log_retention_size
+        zookeeper_log_retention_time           = var.clickhouse_config.zookeeper_log_retention_time
+
+        dynamic "query_cache" {
+          for_each = range(var.clickhouse_config.query_cache == null ? 0 : 1)
+          content {
+            max_entries             = var.clickhouse_config.query_cache.max_entries
+            max_entry_size_in_bytes = var.clickhouse_config.query_cache.max_entry_size_in_bytes
+            max_entry_size_in_rows  = var.clickhouse_config.query_cache.max_entry_size_in_rows
+            max_size_in_bytes       = var.clickhouse_config.query_cache.max_size_in_bytes
+          }
+        }
+
+        dynamic "query_masking_rules" {
+          for_each = var.clickhouse_config.query_masking_rules
+          content {
+            name    = query_masking_rules.value.name
+            regexp  = query_masking_rules.value.regexp
+            replace = query_masking_rules.value.replace
+          }
+        }
 
         dynamic "rabbitmq" {
           for_each = range(var.clickhouse_config.rabbitmq == null ? 0 : 1)
@@ -429,6 +487,7 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
       move_factor         = var.cloud_storage.move_factor
       data_cache_enabled  = var.cloud_storage.data_cache_enabled
       data_cache_max_size = var.cloud_storage.data_cache_max_size
+      prefer_not_to_merge = var.cloud_storage.prefer_not_to_merge
     }
   }
 
@@ -436,6 +495,7 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
     for_each = range(var.shard_group == null ? 0 : 1)
     content {
       name        = var.shard_group.name
+      description = var.shard_group.description
       shard_names = var.shard_group.shard_names
     }
   }
