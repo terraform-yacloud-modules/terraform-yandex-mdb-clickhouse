@@ -1,3 +1,7 @@
+## v1.41.0 - 2026-03-25
+### Chores
+- 4416581 chore(deps): bump actions/cache from 5.0.3 to 5.0.4 ([#73](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/73))
+
 ## v1.40.0 - 2026-03-15
 ### Miscellaneous
 - dd1cb59 add graphite_rollup, and cloud_storage params; ([#72](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/72))
