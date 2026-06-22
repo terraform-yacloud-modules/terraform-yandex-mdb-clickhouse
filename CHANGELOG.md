@@ -1,3 +1,7 @@
+## v1.43.0 - 2026-06-22
+### Chores
+- 56cac02 chore(deps): bump actions/checkout from 6 to 7 ([#75](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/75))
+
 ## v1.42.0 - 2026-04-21
 ### Chores
 - 9e72f24 chore(deps): bump actions/cache from 5.0.4 to 5.0.5 ([#74](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/74))
