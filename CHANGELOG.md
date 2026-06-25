@@ -1,11 +1,3 @@
-## v1.45.0 - 2026-06-25
-### Miscellaneous
-- 8b1feb2 Revert "feat: migrate from deprecated inline database/user blocks to separate…" ([#77](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/77))
-
-## v1.44.0 - 2026-06-25
-### Features
-- c7d69e7 feat: migrate from deprecated inline database/user blocks to separate resources ([#76](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/76))
-
 ## v1.43.0 - 2026-06-22
 ### Chores
 - 56cac02 chore(deps): bump actions/checkout from 6 to 7 ([#75](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/75))
