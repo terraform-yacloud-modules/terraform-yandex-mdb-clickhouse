@@ -1,3 +1,7 @@
+## v1.46.0 - 2026-06-25
+### Miscellaneous
+- a5bb579 Clean up CHANGELOG by removing old versions
+
 ## v1.43.0 - 2026-06-22
 ### Chores
 - 56cac02 chore(deps): bump actions/checkout from 6 to 7 ([#75](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/75))
