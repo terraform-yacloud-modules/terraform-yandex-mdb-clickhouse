@@ -2,22 +2,10 @@ data "yandex_client_config" "client" {}
 
 locals {
   folder_id = var.folder_id == null ? data.yandex_client_config.client.folder_id : var.folder_id
-
-  # Build password map from Lockbox if secret_id provided, otherwise empty
-  lockbox_passwords = var.lockbox_secret_id != null ? {
-    for entry in data.yandex_lockbox_secret_version.ch_passwords[0].entries :
-    entry.key => entry.text_value
-  } : {}
-}
-
-data "yandex_lockbox_secret_version" "ch_passwords" {
-  count     = var.lockbox_secret_id != null ? 1 : 0
-  secret_id = var.lockbox_secret_id
 }
 
 resource "random_password" "password" {
-  # Only generate random password if user has no password in Lockbox and no explicit password
-  for_each         = { for v in var.users : v.name => v if v.password == null && !contains(keys(local.lockbox_passwords), v.name) }
+  for_each         = { for v in var.users : v.name => v if v.password == null }
   length           = 16
   special          = true
   min_lower        = 1
@@ -288,6 +276,149 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
     }
   }
 
+  dynamic "user" {
+    for_each = var.users
+    content {
+      name     = user.value.name
+      password = user.value.password == null ? random_password.password[user.value.name].result : user.value.password
+      dynamic "quota" {
+        for_each = user.value.quota
+        content {
+          interval_duration = quota.value.interval_duration
+          queries           = quota.value.queries
+          errors            = quota.value.errors
+          result_rows       = quota.value.result_rows
+          read_rows         = quota.value.read_rows
+          execution_time    = quota.value.execution_time
+        }
+      }
+
+      dynamic "permission" {
+        for_each = user.value.permission
+        content {
+          database_name = permission.value.database_name
+        }
+      }
+
+      dynamic "settings" {
+        for_each = range(user.value.settings == null ? 0 : 1)
+        content {
+          add_http_cors_header                               = user.value.settings.add_http_cors_header
+          allow_ddl                                          = user.value.settings.allow_ddl
+          allow_introspection_functions                      = user.value.settings.allow_introspection_functions
+          allow_suspicious_low_cardinality_types             = user.value.settings.allow_suspicious_low_cardinality_types
+          async_insert                                       = user.value.settings.async_insert
+          async_insert_busy_timeout                          = user.value.settings.async_insert_busy_timeout
+          async_insert_max_data_size                         = user.value.settings.async_insert_max_data_size
+          async_insert_stale_timeout                         = user.value.settings.async_insert_stale_timeout
+          async_insert_threads                               = user.value.settings.async_insert_threads
+          cancel_http_readonly_queries_on_client_close       = user.value.settings.cancel_http_readonly_queries_on_client_close
+          compile                                            = user.value.settings.compile
+          compile_expressions                                = user.value.settings.compile_expressions
+          connect_timeout                                    = user.value.settings.connect_timeout
+          connect_timeout_with_failover                      = user.value.settings.connect_timeout_with_failover
+          count_distinct_implementation                      = user.value.settings.count_distinct_implementation
+          distinct_overflow_mode                             = user.value.settings.distinct_overflow_mode
+          distributed_aggregation_memory_efficient           = user.value.settings.distributed_aggregation_memory_efficient
+          distributed_ddl_task_timeout                       = user.value.settings.distributed_ddl_task_timeout
+          distributed_product_mode                           = user.value.settings.distributed_product_mode
+          empty_result_for_aggregation_by_empty_set          = user.value.settings.empty_result_for_aggregation_by_empty_set
+          enable_http_compression                            = user.value.settings.enable_http_compression
+          fallback_to_stale_replicas_for_distributed_queries = user.value.settings.fallback_to_stale_replicas_for_distributed_queries
+          flatten_nested                                     = user.value.settings.flatten_nested
+          force_index_by_date                                = user.value.settings.force_index_by_date
+          force_primary_key                                  = user.value.settings.force_primary_key
+          group_by_overflow_mode                             = user.value.settings.group_by_overflow_mode
+          group_by_two_level_threshold                       = user.value.settings.group_by_two_level_threshold
+          group_by_two_level_threshold_bytes                 = user.value.settings.group_by_two_level_threshold_bytes
+          http_connection_timeout                            = user.value.settings.http_connection_timeout
+          http_headers_progress_interval                     = user.value.settings.http_headers_progress_interval
+          http_receive_timeout                               = user.value.settings.http_receive_timeout
+          http_send_timeout                                  = user.value.settings.http_send_timeout
+          input_format_defaults_for_omitted_fields           = user.value.settings.input_format_defaults_for_omitted_fields
+          input_format_values_interpret_expressions          = user.value.settings.input_format_values_interpret_expressions
+          insert_null_as_default                             = user.value.settings.insert_null_as_default
+          insert_quorum                                      = user.value.settings.insert_quorum
+          insert_quorum_timeout                              = user.value.settings.insert_quorum_timeout
+          join_overflow_mode                                 = user.value.settings.join_overflow_mode
+          join_use_nulls                                     = user.value.settings.join_use_nulls
+          joined_subquery_requires_alias                     = user.value.settings.joined_subquery_requires_alias
+          low_cardinality_allow_in_native_format             = user.value.settings.low_cardinality_allow_in_native_format
+          max_ast_depth                                      = user.value.settings.max_ast_depth
+          max_ast_elements                                   = user.value.settings.max_ast_elements
+          max_block_size                                     = user.value.settings.max_block_size
+          max_bytes_before_external_group_by                 = user.value.settings.max_bytes_before_external_group_by
+          max_bytes_before_external_sort                     = user.value.settings.max_bytes_before_external_sort
+          max_bytes_in_distinct                              = user.value.settings.max_bytes_in_distinct
+          max_bytes_in_join                                  = user.value.settings.max_bytes_in_join
+          max_bytes_in_set                                   = user.value.settings.max_bytes_in_set
+          max_bytes_to_read                                  = user.value.settings.max_bytes_to_read
+          max_bytes_to_sort                                  = user.value.settings.max_bytes_to_sort
+          max_bytes_to_transfer                              = user.value.settings.max_bytes_to_transfer
+          max_columns_to_read                                = user.value.settings.max_columns_to_read
+          max_concurrent_queries_for_user                    = user.value.settings.max_concurrent_queries_for_user
+          max_execution_time                                 = user.value.settings.max_execution_time
+          max_expanded_ast_elements                          = user.value.settings.max_expanded_ast_elements
+          max_http_get_redirects                             = user.value.settings.max_http_get_redirects
+          max_insert_block_size                              = user.value.settings.max_insert_block_size
+          max_memory_usage                                   = user.value.settings.max_memory_usage
+          max_memory_usage_for_user                          = user.value.settings.max_memory_usage_for_user
+          max_network_bandwidth                              = user.value.settings.max_network_bandwidth
+          max_network_bandwidth_for_user                     = user.value.settings.max_network_bandwidth_for_user
+          max_query_size                                     = user.value.settings.max_query_size
+          max_replica_delay_for_distributed_queries          = user.value.settings.max_replica_delay_for_distributed_queries
+          max_result_bytes                                   = user.value.settings.max_result_bytes
+          max_result_rows                                    = user.value.settings.max_result_rows
+          max_rows_in_distinct                               = user.value.settings.max_rows_in_distinct
+          max_rows_in_join                                   = user.value.settings.max_rows_in_join
+          max_rows_in_set                                    = user.value.settings.max_rows_in_set
+          max_rows_to_group_by                               = user.value.settings.max_rows_to_group_by
+          max_rows_to_read                                   = user.value.settings.max_rows_to_read
+          max_rows_to_sort                                   = user.value.settings.max_rows_to_sort
+          max_rows_to_transfer                               = user.value.settings.max_rows_to_transfer
+          max_temporary_columns                              = user.value.settings.max_temporary_columns
+          max_temporary_non_const_columns                    = user.value.settings.max_temporary_non_const_columns
+          max_threads                                        = user.value.settings.max_threads
+          memory_profiler_sample_probability                 = user.value.settings.memory_profiler_sample_probability
+          memory_profiler_step                               = user.value.settings.memory_profiler_step
+          merge_tree_max_bytes_to_use_cache                  = user.value.settings.merge_tree_max_bytes_to_use_cache
+          merge_tree_max_rows_to_use_cache                   = user.value.settings.merge_tree_max_rows_to_use_cache
+          merge_tree_min_bytes_for_concurrent_read           = user.value.settings.merge_tree_min_bytes_for_concurrent_read
+          merge_tree_min_rows_for_concurrent_read            = user.value.settings.merge_tree_min_rows_for_concurrent_read
+          min_bytes_to_use_direct_io                         = user.value.settings.min_bytes_to_use_direct_io
+          min_count_to_compile                               = user.value.settings.min_count_to_compile
+          min_count_to_compile_expression                    = user.value.settings.min_count_to_compile_expression
+          min_execution_speed                                = user.value.settings.min_execution_speed
+          min_execution_speed_bytes                          = user.value.settings.min_execution_speed_bytes
+          min_insert_block_size_bytes                        = user.value.settings.min_insert_block_size_bytes
+          min_insert_block_size_rows                         = user.value.settings.min_insert_block_size_rows
+          output_format_json_quote_64bit_integers            = user.value.settings.output_format_json_quote_64bit_integers
+          output_format_json_quote_denormals                 = user.value.settings.output_format_json_quote_denormals
+          priority                                           = user.value.settings.priority
+          quota_mode                                         = user.value.settings.quota_mode
+          read_overflow_mode                                 = user.value.settings.read_overflow_mode
+          readonly                                           = user.value.settings.readonly
+          receive_timeout                                    = user.value.settings.receive_timeout
+          replication_alter_partitions_sync                  = user.value.settings.replication_alter_partitions_sync
+          result_overflow_mode                               = user.value.settings.result_overflow_mode
+          select_sequential_consistency                      = user.value.settings.select_sequential_consistency
+          send_progress_in_http_headers                      = user.value.settings.send_progress_in_http_headers
+          send_timeout                                       = user.value.settings.send_timeout
+          set_overflow_mode                                  = user.value.settings.set_overflow_mode
+          skip_unavailable_shards                            = user.value.settings.skip_unavailable_shards
+          sort_overflow_mode                                 = user.value.settings.sort_overflow_mode
+          timeout_before_checking_execution_speed            = user.value.settings.timeout_before_checking_execution_speed
+          timeout_overflow_mode                              = user.value.settings.timeout_overflow_mode
+          transfer_overflow_mode                             = user.value.settings.transfer_overflow_mode
+          transform_null_in                                  = user.value.settings.transform_null_in
+          use_uncompressed_cache                             = user.value.settings.use_uncompressed_cache
+          wait_for_async_insert                              = user.value.settings.wait_for_async_insert
+          wait_for_async_insert_timeout                      = user.value.settings.wait_for_async_insert_timeout
+        }
+      }
+    }
+  }
+
   dynamic "host" {
     for_each = var.hosts
     content {
@@ -312,6 +443,13 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
           disk_type_id       = shard.value.resources.disk_type_id
         }
       }
+    }
+  }
+
+  dynamic "database" {
+    for_each = var.databases
+    content {
+      name = database.value.name
     }
   }
 
@@ -371,171 +509,4 @@ resource "yandex_mdb_clickhouse_cluster" "this" {
     }
   }
 
-  lifecycle {
-    # Ignore inline database/user blocks — managed via separate resources below
-    ignore_changes = [database, user]
-  }
-}
-
-# ClickHouse databases
-resource "yandex_mdb_clickhouse_database" "dbs" {
-  for_each = { for db in var.databases : db.name => db }
-
-  cluster_id = yandex_mdb_clickhouse_cluster.this.id
-  name       = each.value.name
-
-  depends_on = [yandex_mdb_clickhouse_cluster.this]
-}
-
-# ClickHouse users
-resource "yandex_mdb_clickhouse_user" "users" {
-  for_each = { for u in var.users : u.name => u }
-
-  cluster_id = yandex_mdb_clickhouse_cluster.this.id
-  name       = each.value.name
-
-  # Password priority: Lockbox > explicit password > random
-  password = (
-    contains(keys(local.lockbox_passwords), each.value.name)
-    ? local.lockbox_passwords[each.value.name]
-    : each.value.password != null
-      ? each.value.password
-      : random_password.password[each.key].result
-  )
-
-  dynamic "quota" {
-    for_each = each.value.quota
-    content {
-      interval_duration = quota.value.interval_duration
-      queries           = quota.value.queries
-      errors            = quota.value.errors
-      result_rows       = quota.value.result_rows
-      read_rows         = quota.value.read_rows
-      execution_time    = quota.value.execution_time
-    }
-  }
-
-  dynamic "permission" {
-    for_each = each.value.permission
-    content {
-      database_name = permission.value.database_name
-    }
-  }
-
-  dynamic "settings" {
-    for_each = each.value.settings != null ? [each.value.settings] : []
-    content {
-      add_http_cors_header                               = settings.value.add_http_cors_header
-      allow_ddl                                          = settings.value.allow_ddl
-      allow_introspection_functions                      = settings.value.allow_introspection_functions
-      allow_suspicious_low_cardinality_types             = settings.value.allow_suspicious_low_cardinality_types
-      async_insert                                       = settings.value.async_insert
-      async_insert_busy_timeout                          = settings.value.async_insert_busy_timeout
-      async_insert_max_data_size                         = settings.value.async_insert_max_data_size
-      async_insert_stale_timeout                         = settings.value.async_insert_stale_timeout
-      async_insert_threads                               = settings.value.async_insert_threads
-      cancel_http_readonly_queries_on_client_close       = settings.value.cancel_http_readonly_queries_on_client_close
-      compile_expressions                                = settings.value.compile_expressions
-      connect_timeout                                    = settings.value.connect_timeout
-      connect_timeout_with_failover                      = settings.value.connect_timeout_with_failover
-      count_distinct_implementation                      = settings.value.count_distinct_implementation
-      distinct_overflow_mode                             = settings.value.distinct_overflow_mode
-      distributed_aggregation_memory_efficient           = settings.value.distributed_aggregation_memory_efficient
-      distributed_ddl_task_timeout                       = settings.value.distributed_ddl_task_timeout
-      distributed_product_mode                           = settings.value.distributed_product_mode
-      empty_result_for_aggregation_by_empty_set          = settings.value.empty_result_for_aggregation_by_empty_set
-      enable_http_compression                            = settings.value.enable_http_compression
-      fallback_to_stale_replicas_for_distributed_queries = settings.value.fallback_to_stale_replicas_for_distributed_queries
-      flatten_nested                                     = settings.value.flatten_nested
-      force_index_by_date                                = settings.value.force_index_by_date
-      force_primary_key                                  = settings.value.force_primary_key
-      group_by_overflow_mode                             = settings.value.group_by_overflow_mode
-      group_by_two_level_threshold                       = settings.value.group_by_two_level_threshold
-      group_by_two_level_threshold_bytes                 = settings.value.group_by_two_level_threshold_bytes
-      http_connection_timeout                            = settings.value.http_connection_timeout
-      http_headers_progress_interval                     = settings.value.http_headers_progress_interval
-      http_receive_timeout                               = settings.value.http_receive_timeout
-      http_send_timeout                                  = settings.value.http_send_timeout
-      input_format_defaults_for_omitted_fields           = settings.value.input_format_defaults_for_omitted_fields
-      input_format_values_interpret_expressions          = settings.value.input_format_values_interpret_expressions
-      insert_null_as_default                             = settings.value.insert_null_as_default
-      insert_quorum                                      = settings.value.insert_quorum
-      insert_quorum_timeout                              = settings.value.insert_quorum_timeout
-      join_overflow_mode                                 = settings.value.join_overflow_mode
-      join_use_nulls                                     = settings.value.join_use_nulls
-      joined_subquery_requires_alias                     = settings.value.joined_subquery_requires_alias
-      low_cardinality_allow_in_native_format             = settings.value.low_cardinality_allow_in_native_format
-      max_ast_depth                                      = settings.value.max_ast_depth
-      max_ast_elements                                   = settings.value.max_ast_elements
-      max_block_size                                     = settings.value.max_block_size
-      max_bytes_before_external_group_by                 = settings.value.max_bytes_before_external_group_by
-      max_bytes_before_external_sort                     = settings.value.max_bytes_before_external_sort
-      max_bytes_in_distinct                              = settings.value.max_bytes_in_distinct
-      max_bytes_in_join                                  = settings.value.max_bytes_in_join
-      max_bytes_in_set                                   = settings.value.max_bytes_in_set
-      max_bytes_to_read                                  = settings.value.max_bytes_to_read
-      max_bytes_to_sort                                  = settings.value.max_bytes_to_sort
-      max_bytes_to_transfer                              = settings.value.max_bytes_to_transfer
-      max_columns_to_read                                = settings.value.max_columns_to_read
-      max_concurrent_queries_for_user                    = settings.value.max_concurrent_queries_for_user
-      max_execution_time                                 = settings.value.max_execution_time
-      max_expanded_ast_elements                          = settings.value.max_expanded_ast_elements
-      max_http_get_redirects                             = settings.value.max_http_get_redirects
-      max_insert_block_size                              = settings.value.max_insert_block_size
-      max_memory_usage                                   = settings.value.max_memory_usage
-      max_memory_usage_for_user                          = settings.value.max_memory_usage_for_user
-      max_network_bandwidth                              = settings.value.max_network_bandwidth
-      max_network_bandwidth_for_user                     = settings.value.max_network_bandwidth_for_user
-      max_query_size                                     = settings.value.max_query_size
-      max_replica_delay_for_distributed_queries          = settings.value.max_replica_delay_for_distributed_queries
-      max_result_bytes                                   = settings.value.max_result_bytes
-      max_result_rows                                    = settings.value.max_result_rows
-      max_rows_in_distinct                               = settings.value.max_rows_in_distinct
-      max_rows_in_join                                   = settings.value.max_rows_in_join
-      max_rows_in_set                                    = settings.value.max_rows_in_set
-      max_rows_to_group_by                               = settings.value.max_rows_to_group_by
-      max_rows_to_read                                   = settings.value.max_rows_to_read
-      max_rows_to_sort                                   = settings.value.max_rows_to_sort
-      max_rows_to_transfer                               = settings.value.max_rows_to_transfer
-      max_temporary_columns                              = settings.value.max_temporary_columns
-      max_temporary_non_const_columns                    = settings.value.max_temporary_non_const_columns
-      max_threads                                        = settings.value.max_threads
-      memory_profiler_sample_probability                 = settings.value.memory_profiler_sample_probability
-      memory_profiler_step                               = settings.value.memory_profiler_step
-      merge_tree_max_bytes_to_use_cache                  = settings.value.merge_tree_max_bytes_to_use_cache
-      merge_tree_max_rows_to_use_cache                   = settings.value.merge_tree_max_rows_to_use_cache
-      merge_tree_min_bytes_for_concurrent_read           = settings.value.merge_tree_min_bytes_for_concurrent_read
-      merge_tree_min_rows_for_concurrent_read            = settings.value.merge_tree_min_rows_for_concurrent_read
-      min_bytes_to_use_direct_io                         = settings.value.min_bytes_to_use_direct_io
-      min_count_to_compile_expression                    = settings.value.min_count_to_compile_expression
-      min_execution_speed                                = settings.value.min_execution_speed
-      min_execution_speed_bytes                          = settings.value.min_execution_speed_bytes
-      min_insert_block_size_bytes                        = settings.value.min_insert_block_size_bytes
-      min_insert_block_size_rows                         = settings.value.min_insert_block_size_rows
-      output_format_json_quote_64bit_integers            = settings.value.output_format_json_quote_64bit_integers
-      output_format_json_quote_denormals                 = settings.value.output_format_json_quote_denormals
-      priority                                           = settings.value.priority
-      quota_mode                                         = settings.value.quota_mode
-      read_overflow_mode                                 = settings.value.read_overflow_mode
-      readonly                                           = settings.value.readonly
-      receive_timeout                                    = settings.value.receive_timeout
-      replication_alter_partitions_sync                  = settings.value.replication_alter_partitions_sync
-      result_overflow_mode                               = settings.value.result_overflow_mode
-      select_sequential_consistency                      = settings.value.select_sequential_consistency
-      send_progress_in_http_headers                      = settings.value.send_progress_in_http_headers
-      send_timeout                                       = settings.value.send_timeout
-      set_overflow_mode                                  = settings.value.set_overflow_mode
-      skip_unavailable_shards                            = settings.value.skip_unavailable_shards
-      sort_overflow_mode                                 = settings.value.sort_overflow_mode
-      timeout_before_checking_execution_speed            = settings.value.timeout_before_checking_execution_speed
-      timeout_overflow_mode                              = settings.value.timeout_overflow_mode
-      transfer_overflow_mode                             = settings.value.transfer_overflow_mode
-      transform_null_in                                  = settings.value.transform_null_in
-      use_uncompressed_cache                             = settings.value.use_uncompressed_cache
-      wait_for_async_insert                              = settings.value.wait_for_async_insert
-      wait_for_async_insert_timeout                      = settings.value.wait_for_async_insert_timeout
-    }
-  }
-
-  depends_on = [yandex_mdb_clickhouse_database.dbs]
 }
