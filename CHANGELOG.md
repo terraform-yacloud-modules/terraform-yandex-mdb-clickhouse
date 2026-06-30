@@ -1,3 +1,7 @@
+## v1.47.0 - 2026-06-30
+### Chores
+- 7f1fdcc chore(deps): bump actions/cache from 5.0.5 to 6.1.0 ([#79](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/79))
+
 ## v1.46.0 - 2026-06-25
 ### Miscellaneous
 - a5bb579 Clean up CHANGELOG by removing old versions
