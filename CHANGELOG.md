@@ -1,3 +1,7 @@
+## v1.48.0 - 2026-08-03
+### Chores
+- 81ed95b chore(deps): bump bridgecrewio/checkov-action from 12 to 12.3114.0 ([#80](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/80))
+
 ## v1.47.0 - 2026-06-30
 ### Chores
 - 7f1fdcc chore(deps): bump actions/cache from 5.0.5 to 6.1.0 ([#79](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/79))
