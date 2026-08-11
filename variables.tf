@@ -56,7 +56,6 @@ variable "users" {
       async_insert_stale_timeout                         = optional(number, 0)
       async_insert_threads                               = optional(number, 0)
       cancel_http_readonly_queries_on_client_close       = optional(bool, false)
-      compile                                            = optional(bool, false)
       compile_expressions                                = optional(bool, false)
       connect_timeout                                    = optional(number, 0)
       connect_timeout_with_failover                      = optional(number, 0)
@@ -129,7 +128,6 @@ variable "users" {
       merge_tree_min_bytes_for_concurrent_read           = optional(number, 0)
       merge_tree_min_rows_for_concurrent_read            = optional(number, 0)
       min_bytes_to_use_direct_io                         = optional(number, 0)
-      min_count_to_compile                               = optional(number, 0)
       min_count_to_compile_expression                    = optional(number, 0)
       min_execution_speed                                = optional(number, 0)
       min_execution_speed_bytes                          = optional(number, 0)
@@ -817,5 +815,17 @@ variable "timeouts" {
     update = optional(string)
     delete = optional(string)
   })
+  default = null
+}
+
+variable "lockbox_secret_id" {
+  description = <<EOF
+    (Optional) Yandex Lockbox secret ID containing user passwords.
+    Secret entries must match user names (e.g. entry key "foo" -> password for user "foo").
+    If not set, random passwords will be generated.
+
+    Default: null
+  EOF
+  type    = string
   default = null
 }
