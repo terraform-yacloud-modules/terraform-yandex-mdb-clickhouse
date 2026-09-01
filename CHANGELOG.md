@@ -1,3 +1,10 @@
+## v1.53.0 - 2026-09-01
+### Bug Fixes
+- 9c5196f fix: передача folder_id в примере с приоритетом tfvars над YC_FOLDER_ID
+
+### Miscellaneous
+- 9ebb43f Merge pull request [#84](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/84) from terraform-yacloud-modules/feature/add-folder-id-tfvars
+
 ## v1.52.0 - 2026-08-31
 ### Chores
 - 3e6fb3c chore(deps): bump bridgecrewio/checkov-action ([#85](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/85))
