@@ -179,8 +179,8 @@ variable "databases" {
 variable "hosts" {
   description = <<EOF
     (Required) A list of ClickHouse hosts.
-    - type - (Required) The type of the host to be deployed. Can be either "CLICKHOUSE" or "ZOOKEEPER".
-    - zone  - (Required) The availability zone where the ClickHouse host will be created. Allowed values: "ru-central1-a", "ru-central1-b", "ru-central1-c".
+    - type - (Required) The type of the host to be deployed. Can be either "CLICKHOUSE", "ZOOKEEPER" or "KEEPER". "ZOOKEEPER" is deprecated and cannot be used for new clusters.
+    - zone  - (Required) The availability zone where the ClickHouse host will be created. Allowed values: "ru-central1-a", "ru-central1-b", "ru-central1-d".
     - subnet_id - (Optional) The ID of the subnet, to which the host belongs. The subnet must be a part of the network to which the cluster belongs.
     - shard_name - (Optional) The name of the shard to which the host belongs.
     - assign_public_ip - (Optional) Sets whether the host should get a public IP address on creation. Can be either true or false.
@@ -733,19 +733,19 @@ variable "clickhouse_config" {
     merge_tree = optional(object({
       allow_remote_fs_zero_copy_replication                     = optional(bool, false)
       check_sample_column_is_correct                            = optional(bool, true)
-      cleanup_delay_period                                      = optional(number, 0)
+      cleanup_delay_period                                      = optional(number, 30)
       inactive_parts_to_delay_insert                            = optional(number, 0)
       inactive_parts_to_throw_insert                            = optional(number, 0)
-      max_avg_part_size_for_too_many_parts                      = optional(number, 0)
+      max_avg_part_size_for_too_many_parts                      = optional(number, 1073741824)
       max_bytes_to_merge_at_max_space_in_pool                   = optional(number, 161061273600)
       max_bytes_to_merge_at_min_space_in_pool                   = optional(number, 1048576)
       max_cleanup_delay_period                                  = optional(number, 300)
       max_merge_selecting_sleep_ms                              = optional(number, 60000)
-      max_number_of_merges_with_ttl_in_pool                     = optional(number, 0)
+      max_number_of_merges_with_ttl_in_pool                     = optional(number, 2)
       max_parts_in_total                                        = optional(number, 10000)
       max_replicated_merges_in_queue                            = optional(number, 16)
       merge_max_block_size                                      = optional(number, 8192)
-      merge_selecting_sleep_ms                                  = optional(number, 0)
+      merge_selecting_sleep_ms                                  = optional(number, 5000)
       merge_with_recompression_ttl_timeout                      = optional(number, 14400)
       merge_with_ttl_timeout                                    = optional(number, 14400)
       min_age_to_force_merge_on_partition_only                  = optional(bool, false)
