@@ -1,3 +1,7 @@
+## v1.63.0 - 2026-11-10
+### Chores
+- 27019c9 chore(deps): bump bridgecrewio/checkov-action ([#95](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/95))
+
 ## v1.62.0 - 2026-11-10
 ### Bug Fixes
 - d3afe22 fix: align merge_tree defaults and migrate example to Keeper hosts ([#94](https://github.com/terraform-yacloud-modules/terraform-yandex-mdb-clickhouse/pull/94))
